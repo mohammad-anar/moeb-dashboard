@@ -15,7 +15,8 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       pathname.startsWith("/login") ||
       pathname.startsWith("/forgot-password") ||
       pathname.startsWith("/reset-password") ||
-      pathname.startsWith("/change-password");
+      pathname.startsWith("/change-password") ||
+      pathname.startsWith("/verify");
 
     if (!isLoggedIn && !isAuthPage) {
       router.replace("/login");

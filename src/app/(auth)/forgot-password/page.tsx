@@ -6,12 +6,14 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import logo from "@/assets/logo.png";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface ForgotPasswordForm {
   email: string;
 }
 
 export default function ForgotPasswordPage() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -24,6 +26,9 @@ export default function ForgotPasswordPage() {
 
   const onSubmit = (data: ForgotPasswordForm) => {
     console.log("Forgot password submitted:", data);
+    if (data) {
+      router.push("/verify");
+    }
   };
 
   return (

@@ -49,7 +49,7 @@ export default function LoginPage() {
       </div>
       {/* welcome title */}
       <div className="text-center mb-10">
-        <h1 className="text-4xl font-light text-gray-900 mb-4">
+        <h1 className="text-4xl font-normal text-gray-900 mb-4">
           Welcome Back!
         </h1>
       </div>

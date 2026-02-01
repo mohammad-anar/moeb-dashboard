@@ -5,6 +5,8 @@ import { Eye, EyeOff, Lock } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import logo from "@/assets/logo.png";
+import Image from "next/image";
 
 interface ChangePasswordForm {
   currentPassword: string;
@@ -38,9 +40,19 @@ export default function ChangePasswordPage() {
 
   return (
     <div className="w-full max-w-md px-8">
+      {/* logo */}
+      <div className="flex items-center justify-center">
+        <Image
+          src={logo}
+          width={300}
+          height={300}
+          className="w-40"
+          alt="logo"
+        />
+      </div>
       {/* Header */}
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-foreground mb-4">
+        <h1 className="text-4xl font-normal text-foreground mb-4">
           Change Password
         </h1>
         <p className="text-foreground/60 text-sm leading-relaxed">
@@ -52,7 +64,7 @@ export default function ChangePasswordPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Current Password Field */}
         <div>
-          <label className="block text-sm font-medium text-foreground mb-2">
+          <label className="block text-sm font-normal text-foreground mb-2">
             Current Password
           </label>
           <div className="relative">
@@ -89,7 +101,7 @@ export default function ChangePasswordPage() {
 
         {/* New Password Field */}
         <div>
-          <label className="block text-sm font-medium text-foreground mb-2">
+          <label className="block text-sm font-normal text-foreground mb-2">
             New Password
           </label>
           <div className="relative">
@@ -129,7 +141,7 @@ export default function ChangePasswordPage() {
 
         {/* Confirm Password Field */}
         <div>
-          <label className="block text-sm font-medium text-foreground mb-2">
+          <label className="block text-sm font-normal text-foreground mb-2">
             Confirm Password
           </label>
           <div className="relative">
@@ -165,7 +177,7 @@ export default function ChangePasswordPage() {
         {/* Update Button */}
         <Button
           type="submit"
-          className="w-full !bg-my-primary text-white hover:!bg-my-primary/90"
+          className="w-full  text-white bg-light-black"
           size="lg"
         >
           Update Password
@@ -174,11 +186,9 @@ export default function ChangePasswordPage() {
 
       {/* Back Link */}
       <div className="text-center mt-6">
-        <Link
-          href="/"
-          className="text-my-green text-sm font-medium hover:underline"
-        >
-          Back to home
+        <Link href="/login" className="text-blue-500 group text-sm font-normal">
+          <span className="text-light-black ">Back to</span>{" "}
+          <span className="underline group-hover:no-underline">LOG IN</span>
         </Link>
       </div>
     </div>

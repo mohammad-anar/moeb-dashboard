@@ -4,6 +4,8 @@ import { Eye, EyeOff, Lock } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import logo from "@/assets/logo.png";
+import Image from "next/image";
 
 interface ResetPasswordForm {
   newPassword: string;
@@ -33,15 +35,24 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="w-full max-w-md px-8">
+      {/* logo */}
+      <div className="flex items-center justify-center">
+        <Image
+          src={logo}
+          width={300}
+          height={300}
+          className="w-40"
+          alt="logo"
+        />
+      </div>
       {/* Header */}
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-foreground mb-4">
-          Create New Password
+        <h1 className="text-4xl font-normal text-foreground mb-4">
+          New Password
         </h1>
         <p className="text-muted-foreground text-sm leading-relaxed">
-          Your new password must be different from
-          <br />
-          previous passwords.
+          Set the new password for your account so you can login and access all
+          featuress.
         </p>
       </div>
 
@@ -49,7 +60,7 @@ export default function ResetPasswordPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* New Password Field */}
         <div>
-          <label className="block text-sm font-medium text-foreground mb-2">
+          <label className="block text-sm font-normal text-foreground mb-2">
             New Password
           </label>
           <div className="relative">
@@ -87,7 +98,7 @@ export default function ResetPasswordPage() {
 
         {/* Confirm Password Field */}
         <div>
-          <label className="block text-sm font-medium text-foreground mb-2">
+          <label className="block text-sm font-normal text-foreground mb-2">
             Confirm Password
           </label>
           <div className="relative">
@@ -124,20 +135,17 @@ export default function ResetPasswordPage() {
         {/* Confirm Button */}
         <button
           type="submit"
-          className="w-full py-3 rounded-lg font-semibold text-white transition-opacity hover:opacity-90"
-          style={{ backgroundColor: "#c9a227" }}
+          className="w-full py-3 rounded-lg font-semibold bg-light-black text-white transition-opacity hover:opacity-90"
         >
-          Confirm
+          Update Password
         </button>
       </form>
 
       {/* Back to Login Link */}
       <div className="text-center mt-6">
-        <Link
-          href="/"
-          className="text-accent text-sm font-medium hover:underline"
-        >
-          Back to login
+        <Link href="/login" className="text-blue-500 group text-sm font-normal">
+          <span className="text-light-black ">Back to</span>{" "}
+          <span className="underline group-hover:no-underline">LOG IN</span>
         </Link>
       </div>
     </div>

@@ -58,7 +58,7 @@ export default function LoginPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Email Field */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-normal text-gray-700 mb-2">
             Email
           </label>
           <div className="relative ">
@@ -86,7 +86,7 @@ export default function LoginPage() {
 
         {/* Password Field */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-normal text-gray-700 mb-2">
             Password
           </label>
           <div className="relative">
@@ -125,7 +125,7 @@ export default function LoginPage() {
         <div className="text-right -mt-4">
           <Link
             href="/forgot-password"
-            className="text-my-green underline text-sm font-medium hover:underline"
+            className="text-blue-500 underline text-sm font-normal hover:underline"
           >
             Forgot password?
           </Link>
@@ -134,7 +134,7 @@ export default function LoginPage() {
         {/* Sign In Button */}
         <Button
           type="submit"
-          className="w-full py-6 uppercase rounded-lg font-semibold text-white text-lg !bg-my-primary hover:!bg-my-primary/80 cursor-pointer transition-colors"
+          className="w-full py-6 uppercase rounded-lg font-semibold bg-light-black text-white text-lg cursor-pointer transition-colors"
         >
           Log in
         </Button>

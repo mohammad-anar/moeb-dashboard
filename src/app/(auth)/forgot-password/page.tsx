@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Mail } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import logo from "@/assets/logo.png";
+import Image from "next/image";
 
 interface ForgotPasswordForm {
   email: string;
@@ -26,15 +28,24 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="w-full max-w-md px-8">
+      {/* logo */}
+      <div className="flex items-center justify-center">
+        <Image
+          src={logo}
+          width={300}
+          height={300}
+          className="w-40"
+          alt="logo"
+        />
+      </div>
       {/* Header */}
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-foreground mb-4">
+        <h1 className="text-4xl font-normal text-foreground mb-4">
           Forgot Password
         </h1>
         <p className="text-muted-foreground text-sm leading-relaxed">
-          Enter the email or phone your account and we&apos;ll
-          <br />
-          send a code to reset your password.
+          Enter your email for the verification proccess,we will send 4 digits
+          code to your email.
         </p>
       </div>
 
@@ -42,7 +53,7 @@ export default function ForgotPasswordPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Email Field */}
         <div>
-          <label className="block text-sm font-medium text-foreground mb-2">
+          <label className="block text-sm font-normal text-foreground mb-2">
             Email
           </label>
           <div className="relative">
@@ -73,7 +84,7 @@ export default function ForgotPasswordPage() {
         {/* Send Button */}
         <Button
           type="submit"
-          className="w-full !bg-my-primary py-6 rounded-lg text-lg font-semibold text-white hover:bg-my-primary/90 transition-colors"
+          className="w-full bg-light-black py-6 rounded-lg text-lg font-semibold text-white  transition-colors"
         >
           Send
         </Button>
@@ -85,9 +96,9 @@ export default function ForgotPasswordPage() {
           Remember your password?{" "}
           <Link
             href="/login"
-            className="text-my-green font-medium hover:underline"
+            className="text-blue-500 uppercase font-normal hover:underline"
           >
-            Sign in
+            Log in
           </Link>
         </p>
       </div>

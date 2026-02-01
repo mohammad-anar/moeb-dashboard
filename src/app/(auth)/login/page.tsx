@@ -2,10 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import logo from "@/assets/logo.png";
 
 interface LoginForm {
   email: string;
@@ -35,13 +37,21 @@ export default function LoginPage() {
   return (
     <div className="w-full max-w-md px-8">
       {/* Header */}
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">Welcome Back!</h1>
-        <p className="text-gray-600 text-sm leading-relaxed">
-          Login with your credentials to access your
-          <br />
-          account and manage everything from one place.
-        </p>
+      {/* logo */}
+      <div className="flex items-center justify-center">
+        <Image
+          src={logo}
+          width={300}
+          height={300}
+          className="w-40"
+          alt="logo"
+        />
+      </div>
+      {/* welcome title */}
+      <div className="text-center mb-10">
+        <h1 className="text-4xl font-light text-gray-900 mb-4">
+          Welcome Back!
+        </h1>
       </div>
 
       {/* Form */}
@@ -124,9 +134,9 @@ export default function LoginPage() {
         {/* Sign In Button */}
         <Button
           type="submit"
-          className="w-full py-6 rounded-lg font-semibold text-white text-lg !bg-my-primary hover:!bg-my-primary/80 cursor-pointer transition-colors"
+          className="w-full py-6 uppercase rounded-lg font-semibold text-white text-lg !bg-my-primary hover:!bg-my-primary/80 cursor-pointer transition-colors"
         >
-          Sign In
+          Log in
         </Button>
       </form>
     </div>

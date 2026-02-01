@@ -25,6 +25,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     if (isLoggedIn && isAuthPage) {
       router.replace("/");
     }
+    // nothing
 
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setChecking(false);

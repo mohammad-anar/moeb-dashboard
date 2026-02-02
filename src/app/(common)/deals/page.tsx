@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { PromoCard } from "../cards/PromoCard";
+import { PromoCard } from "../../../components/cards/PromoCard";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { MyModal } from "@/components/shared/MyModal";

@@ -182,7 +182,7 @@ export function DriverTable({
 }: ProductsTableProps) {
   const [open, setOpen] = useState(true);
   return (
-    <div className="space-y-6 bg-secondary p-5 rounded-xl">
+    <div className="space-y-6 rounded-xl">
       <div className="flex items-center gap-3 w-full">
         <div className="flex-1 flex items-center gap-3 px-4 py-2 rounded-lg border border-gray-200 bg-white">
           <Search className="w-5 h-5 text-gray-400" />

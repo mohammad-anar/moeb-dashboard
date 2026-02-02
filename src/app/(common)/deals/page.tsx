@@ -7,8 +7,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { PromoCard } from "../cards/PromoCard";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { MyModal } from "@/components/shared/MyModal";
+import { AddDealsForm } from "@/components/forms/AddDealsForm";
 
 const DriverPage = () => {
+  const [open, setOpen] = useState(false);
   const statData = [
     {
       title: "Total Offers",
@@ -26,9 +31,14 @@ const DriverPage = () => {
 
   return (
     <div className="p-5">
-      <div className="mb-10">
-        <h4 className="text-[36px]">Deals Management</h4>
-        <p>Manage and monitor deals management</p>
+      <div className="flex items-center justify-between">
+        <div className="mb-10">
+          <h4 className="text-[36px]">Deals Management</h4>
+          <p>Manage and monitor deals management</p>
+        </div>
+        <Button onClick={() => setOpen(!open)} className="bg-primary">
+          Add Deals
+        </Button>
       </div>
       {/* top cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -80,6 +90,9 @@ const DriverPage = () => {
         </div>{" "}
         <MyPagination />
       </div>
+      <MyModal open={open} onOpenChange={setOpen}>
+        <AddDealsForm />
+      </MyModal>
     </div>
   );
 };

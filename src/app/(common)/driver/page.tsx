@@ -33,6 +33,10 @@ const DriverPage = () => {
   };
   return (
     <div className="p-5">
+      <div className="mb-10">
+        <h4 className="text-[36px]">Driver Management</h4>
+        <p>Manage and monitor all users on your platform</p>
+      </div>
       {/* top cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statData.map((item, index) => (

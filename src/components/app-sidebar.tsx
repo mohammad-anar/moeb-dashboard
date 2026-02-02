@@ -2,6 +2,7 @@
 
 import {
   IconCalendarSearch,
+  IconCalendarUser,
   IconDashboard,
   IconMessage,
   IconNotes,
@@ -32,6 +33,11 @@ const data = {
       name: "Driver Management",
       url: "/driver",
       icon: IconUsersGroup,
+    },
+    {
+      name: "Deals Management",
+      url: "/deals",
+      icon: IconCalendarUser,
     },
     {
       name: "Marketplace Management",

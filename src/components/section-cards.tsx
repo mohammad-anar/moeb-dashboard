@@ -1,6 +1,13 @@
-import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react"
+import {
+  IconClock,
+  IconTarget,
+  IconTrendingDown,
+  IconTrendingUp,
+  IconUser,
+  IconUsersGroup,
+} from "@tabler/icons-react";
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
@@ -8,95 +15,86 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 
 export function SectionCards() {
+  const statisticsData = [
+    {
+      id: 1,
+      amount: 412,
+      icon: IconUser,
+      percentage: "+23%",
+      description: "Total registered drivers",
+      bgColor: "purple-100",
+      iconColor: "purple",
+    },
+    {
+      id: 2,
+      amount: 4,
+      icon: IconClock,
+      percentage: "+12%",
+      description: "Pending drivers approvals",
+      bgColor: "gray-100",
+      iconColor: "gray",
+    },
+    {
+      id: 3,
+      amount: 142,
+      icon: IconUsersGroup,
+      percentage: "+23%",
+      description: "Active job offers",
+      bgColor: "blue-100",
+      iconColor: "blue",
+    },
+    {
+      id: 4,
+      amount: 321,
+      icon: IconTarget,
+      percentage: "+4%",
+      description: "Total Marketplace listings",
+      bgColor: "orange-100",
+      iconColor: "orange",
+    },
+  ];
+
+  const bgColorMap: Record<string, string> = {
+    "purple-100": "bg-purple-100",
+    "gray-100": "bg-gray-100",
+    "blue-100": "bg-blue-100",
+    "orange-100": "bg-orange-100",
+  };
   return (
-    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>Total Revenue</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            $1,250.00
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconTrendingUp />
-              +12.5%
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Trending up this month <IconTrendingUp className="size-4" />
-          </div>
-          <div className="text-muted-foreground">
-            Visitors for the last 6 months
-          </div>
-        </CardFooter>
-      </Card>
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>New Customers</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            1,234
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconTrendingDown />
-              -20%
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Down 20% this period <IconTrendingDown className="size-4" />
-          </div>
-          <div className="text-muted-foreground">
-            Acquisition needs attention
-          </div>
-        </CardFooter>
-      </Card>
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>Active Accounts</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            45,678
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconTrendingUp />
-              +12.5%
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Strong user retention <IconTrendingUp className="size-4" />
-          </div>
-          <div className="text-muted-foreground">Engagement exceed targets</div>
-        </CardFooter>
-      </Card>
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>Growth Rate</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            4.5%
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconTrendingUp />
-              +4.5%
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Steady performance increase <IconTrendingUp className="size-4" />
-          </div>
-          <div className="text-muted-foreground">Meets growth projections</div>
-        </CardFooter>
-      </Card>
+    <div className=" *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4  *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+      {statisticsData?.map((item, index) => {
+        const Icon = item.icon;
+        return (
+          <Card key={index} className="@container/card">
+            <CardHeader>
+              <CardDescription>
+                <div
+                  className={`w-10 h-10 ${bgColorMap[item.bgColor]} rounded-md flex items-center justify-center`}
+                >
+                  <Icon color={item.iconColor} />
+                </div>
+              </CardDescription>
+              <CardTitle className="text-4xl font-bold tabular-nums ">
+                {String(item.amount).padStart(2, "0")}
+              </CardTitle>
+              <CardAction>
+                <Badge
+                  variant={"outline"}
+                  className="bg-green-200 text-green-600 border-green-600"
+                >
+                  {item.percentage}
+                </Badge>
+              </CardAction>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="text-muted-foreground">{item.description}</div>
+            </CardFooter>
+          </Card>
+        );
+      })}
     </div>
-  )
+  );
 }

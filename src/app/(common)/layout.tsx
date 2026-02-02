@@ -9,7 +9,7 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
       <SidebarProvider
         style={
           {
-            "--sidebar-width": "calc(var(--spacing) * 60)",
+            "--sidebar-width": "calc(var(--spacing) * 70)",
             "--header-height": "calc(var(--spacing) * 15)",
           } as React.CSSProperties
         }

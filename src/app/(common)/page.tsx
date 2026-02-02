@@ -1,3 +1,4 @@
+import { AnalyticsChart1 } from "@/components/charts/AreaChart";
 import { SectionCards } from "@/components/section-cards";
 
 const page = () => {
@@ -7,6 +8,9 @@ const page = () => {
         <div className="@container/main flex flex-1 flex-col gap-2">
           <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
             <SectionCards />
+          </div>
+          <div className="p-5">
+            <AnalyticsChart1 />
           </div>
         </div>
       </div>

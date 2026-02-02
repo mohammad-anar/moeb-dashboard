@@ -1,12 +1,10 @@
 "use client";
 
 import {
-  IconBrandProducthunt,
-  IconCategory,
+  IconCalendarSearch,
   IconDashboard,
-  IconList,
-  IconMenuOrder,
-  IconSettings,
+  IconMessage,
+  IconNotes,
   IconUsersGroup,
 } from "@tabler/icons-react";
 import * as React from "react";
@@ -31,34 +29,24 @@ const data = {
       icon: IconDashboard,
     },
     {
-      name: "Category Management",
-      url: "/category",
-      icon: IconCategory,
-    },
-    {
-      name: "Product Management",
-      url: "/product",
-      icon: IconBrandProducthunt,
-    },
-    {
-      name: "Order Management",
-      url: "/order",
-      icon: IconMenuOrder,
-    },
-    {
-      name: "User List",
-      url: "/user",
+      name: "Driver Management",
+      url: "/driver",
       icon: IconUsersGroup,
     },
     {
-      name: "Banner",
-      url: "/banner",
-      icon: IconList,
+      name: "Marketplace Management",
+      url: "/marketplace",
+      icon: IconCalendarSearch,
     },
     {
-      name: "Settings",
-      url: "/settings",
-      icon: IconSettings,
+      name: "Support",
+      url: "/support",
+      icon: IconMessage,
+    },
+    {
+      name: "Terms & Conditions",
+      url: "/user",
+      icon: IconNotes,
     },
   ],
 };

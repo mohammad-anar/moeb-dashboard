@@ -1,4 +1,6 @@
 "use client";
+import ChatComponent from "@/components/page/support/ChatComponent";
+import { MyModal } from "@/components/shared/MyModal";
 import { MyPagination } from "@/components/shared/MyPagination";
 
 import { Button } from "@/components/ui/button";
@@ -72,6 +74,7 @@ const emails = [
 
 const DriverPage = () => {
   const [selectedEmails, setSelectedEmails] = useState<number[]>([]);
+  const [open, setOpen] = useState(false);
 
   const toggleSelectAll = () => {
     if (selectedEmails.length === emails.length) {
@@ -152,7 +155,8 @@ const DriverPage = () => {
                 {emails.map((email) => (
                   <div
                     key={email.id}
-                    className="grid grid-cols-12 gap-4 items-center pb-4 border-b border-border/50 last:border-b-0"
+                    onClick={() => setOpen(!open)}
+                    className="hover:bg-gray-50 cursor-pointer duration-300 grid grid-cols-12 gap-4 items-center pb-4 border-b border-border/50 last:border-b-0"
                   >
                     <div className="flex items-center gap-5">
                       <div className="col-span-1 flex items-center">
@@ -164,7 +168,7 @@ const DriverPage = () => {
                         />
                       </div>
                       <div className="col-span-1">
-                        <button className="text-muted-foreground hover:text-foreground">
+                        <button className="text-muted-foreground hover:text-foreground mt-1">
                           <svg
                             className="w-5 h-5"
                             fill="currentColor"
@@ -175,16 +179,18 @@ const DriverPage = () => {
                         </button>
                       </div>
                     </div>
-                    <div className="col-span-2 text-sm font-medium text-foreground">
-                      {email.sender}
-                    </div>
-                    <div className="col-span-6">
-                      <p className="text-sm text-muted-foreground">
-                        {email.subject}
-                      </p>
-                    </div>
-                    <div className="col-span-2 text-right text-sm text-muted-foreground">
-                      {email.date}
+                    <div className="col-span-10 grid grid-cols-10">
+                      <div className="col-span-2 text-sm font-medium text-foreground">
+                        {email.sender}
+                      </div>
+                      <div className="col-span-6">
+                        <p className="text-sm text-muted-foreground">
+                          {email.subject}
+                        </p>
+                      </div>
+                      <div className="col-span-2 text-right text-sm text-muted-foreground">
+                        {email.date}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -194,6 +200,13 @@ const DriverPage = () => {
         </div>
         <MyPagination />
       </div>
+      <MyModal
+        open={open}
+        contentClassName="min-w-[60vw]"
+        onOpenChange={setOpen}
+      >
+        <ChatComponent />
+      </MyModal>
     </div>
   );
 };

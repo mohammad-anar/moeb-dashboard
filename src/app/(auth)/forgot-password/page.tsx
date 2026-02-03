@@ -34,12 +34,12 @@ export default function ForgotPasswordPage() {
   return (
     <div className="w-full max-w-md px-8">
       {/* logo */}
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center mb-5">
         <Image
           src={logo}
           width={300}
           height={300}
-          className="w-40"
+          className="w-60"
           alt="logo"
         />
       </div>

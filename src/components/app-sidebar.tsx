@@ -73,14 +73,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <div className="flex items-center justify-center px-8 pb-2">
               <Link
                 href="/"
-                className="block w-28 duration-300 rounded-full overflow-hidden"
+                className="block w-full duration-300  overflow-hidden"
               >
                 <Image
                   src={logo}
                   className="w-full h-full"
                   width={300}
                   height={300}
-                  alt="Marbapp logo"
+                  alt="Ekkali logo"
                 />
               </Link>
             </div>

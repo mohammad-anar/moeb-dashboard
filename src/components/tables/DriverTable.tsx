@@ -257,21 +257,19 @@ export function DriverTable({
                 </TableCell>
 
                 <TableCell className="px-4 py-3 text-center">
-                  <div className="flex items-center justify-center gap-2">
-                    <Button
-                      size="icon"
-                      className="bg-blue-700 cursor-pointer"
+                  <div className="flex items-center justify-center gap-5">
+                    <div
+                      className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full"
                       onClick={() => setOpen(!open)}
                     >
-                      <IconEye size={16} />
-                    </Button>
-                    <Button
-                      size="icon"
-                      className="bg-red-700 cursor-pointer"
+                      <IconEye color="blue" size={25} />
+                    </div>
+                    <div
+                      className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full"
                       onClick={() => handleSuspend(product.id)}
                     >
-                      <IconBan size={16} />
-                    </Button>
+                      <IconBan color="red" size={16} />
+                    </div>
                   </div>
                 </TableCell>
               </TableRow>

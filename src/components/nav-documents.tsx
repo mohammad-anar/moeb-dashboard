@@ -34,10 +34,10 @@ export function NavDocuments({
         {items.map((item) => (
           <SidebarMenuItem
             className={cn(
-              "mb-2",
+              "mb-2 duration-300 transition-all",
               pathName === item.url
                 ? "bg-amber-400 rounded-sm text-white"
-                : "text-black hover:bg-gray-200 hover:text-black rounded-sm",
+                : "text-black hover:bg-gray-200 hover:text-black rounded-sm duration-300",
             )}
             key={item.name}
           >

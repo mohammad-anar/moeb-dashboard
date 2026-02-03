@@ -4,6 +4,7 @@ import {
   IconCalendarSearch,
   IconCalendarUser,
   IconDashboard,
+  IconMapPin,
   IconMessage,
   IconNotes,
   IconUsersGroup,
@@ -53,6 +54,11 @@ const data = {
       name: "Terms & Conditions",
       url: "/terms-and-condition",
       icon: IconNotes,
+    },
+    {
+      name: "Service Area",
+      url: "/service-area",
+      icon: IconMapPin,
     },
   ],
 };

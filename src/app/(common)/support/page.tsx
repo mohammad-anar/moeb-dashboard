@@ -99,7 +99,7 @@ const DriverPage = () => {
       {/* tables */}
       <div className="mt-10">
         <div>
-          <div className="min-h-screen bg-background">
+          <div>
             {/* Header Toolbar */}
             <div className="border-b border-border">
               <div className="flex items-center justify-between px-6 py-4">

@@ -13,8 +13,8 @@ import {
 import { IconBan, IconEye } from "@tabler/icons-react";
 import { Download, Search, Sliders } from "lucide-react";
 import { useState } from "react";
-import { MyModal } from "../shared/MyModal";
 import { DriverView } from "../page/driverManagement/DriverView";
+import { MyModal } from "../shared/MyModal";
 
 interface Product {
   id: string;
@@ -180,7 +180,7 @@ export function DriverTable({
   handleView,
   handleSuspend,
 }: ProductsTableProps) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   return (
     <div className="space-y-6 rounded-xl">
       <div className="flex items-center gap-3 w-full">

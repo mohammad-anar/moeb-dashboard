@@ -51,7 +51,7 @@ const data = {
     },
     {
       name: "Terms & Conditions",
-      url: "/user",
+      url: "/terms-and-condition",
       icon: IconNotes,
     },
   ],

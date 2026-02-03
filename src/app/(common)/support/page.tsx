@@ -72,7 +72,7 @@ const emails = [
   },
 ];
 
-const DriverPage = () => {
+const SupportPage = () => {
   const [selectedEmails, setSelectedEmails] = useState<number[]>([]);
   const [open, setOpen] = useState(false);
 
@@ -211,4 +211,4 @@ const DriverPage = () => {
   );
 };
 
-export default DriverPage;
+export default SupportPage;

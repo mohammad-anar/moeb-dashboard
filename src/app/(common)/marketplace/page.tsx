@@ -1,6 +1,5 @@
 "use client";
 import { MyPagination } from "@/components/shared/MyPagination";
-import { DriverTable } from "@/components/tables/DriverTable";
 import { MarketplaceTable } from "@/components/tables/MarketplaceTable";
 import {
   Card,
@@ -9,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-const DriverPage = () => {
+const MarketplacePage = () => {
   const statData = [
     {
       title: "Total Item",
@@ -62,4 +61,4 @@ const DriverPage = () => {
   );
 };
 
-export default DriverPage;
+export default MarketplacePage;

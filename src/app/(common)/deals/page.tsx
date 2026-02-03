@@ -12,7 +12,7 @@ import { useState } from "react";
 import { MyModal } from "@/components/shared/MyModal";
 import { AddDealsForm } from "@/components/forms/AddDealsForm";
 
-const DriverPage = () => {
+const DealsPage = () => {
   const [open, setOpen] = useState(false);
   const statData = [
     {
@@ -97,4 +97,4 @@ const DriverPage = () => {
   );
 };
 
-export default DriverPage;
+export default DealsPage;

@@ -16,6 +16,7 @@ import { AddServiceAreaForm } from "../forms/AddServiceAreaForm";
 import { MyModal } from "../shared/MyModal";
 import { Switch } from "../ui/switch";
 import { EditServiceAreaForm } from "../forms/EditServiceAreaForm";
+import SwitchWithState from "../shared/SwitchWithState";
 
 interface Service {
   id: string;
@@ -43,66 +44,52 @@ const defaultServices: Service[] = [
   },
   {
     id: "2",
-    areaName: "California",
-    status: "Open",
-    city: "Los Angeles, San Diego, San Francisco, San Jose, Sacramento",
+    areaName: "Texas",
+    status: "Close",
+    city: "Austin, Dallas, Houston",
     isActive: true,
   },
   {
     id: "3",
-    areaName: "Texas",
-    status: "Open",
-    city: "Houston, Dallas, Austin, San Antonio, Fort Worth",
+    areaName: "New York",
+    status: "Close",
+    city: "New York",
     isActive: true,
   },
   {
     id: "4",
-    areaName: "New York",
-    status: "Open",
-    city: "New York City, Buffalo, Rochester, Albany, Syracuse",
+    areaName: "Massachusetts",
+    status: "Close",
+    city: "Boston",
     isActive: true,
   },
   {
     id: "5",
-    areaName: "Illinois",
+    areaName: "District of Columbia",
     status: "Close",
-    city: "Chicago, Aurora, Naperville, Joliet, Rockford",
+    city: "Washington DC",
     isActive: false,
   },
   {
     id: "6",
     areaName: "Georgia",
-    status: "Open",
-    city: "Atlanta, Savannah, Augusta, Macon, Columbus",
+    status: "Close",
+    city: "Atlanta",
     isActive: true,
   },
   {
     id: "7",
-    areaName: "Arizona",
+    areaName: "Nevada",
     status: "Close",
-    city: "Phoenix, Tucson, Mesa, Chandler, Scottsdale",
+    city: "Las Vegas",
     isActive: false,
   },
   {
     id: "8",
     areaName: "Washington",
-    status: "Open",
-    city: "Seattle, Tacoma, Bellevue, Everett, Spokane",
-    isActive: true,
-  },
-  {
-    id: "9",
-    areaName: "Colorado",
-    status: "Open",
-    city: "Denver, Boulder, Aurora, Fort Collins, Colorado Springs",
-    isActive: true,
-  },
-  {
-    id: "10",
-    areaName: "Nevada",
     status: "Close",
-    city: "Las Vegas, Henderson, Reno, Sparks, Carson City",
-    isActive: false,
+    city: "Seattle",
+    isActive: true,
   },
 ];
 
@@ -163,7 +150,7 @@ export function ServiceAreaTable({
                     className={
                       area.status === "Open"
                         ? "bg-green-50 text-green-700 border-green-300"
-                        : "bg-orange-50 text-orange-700 border-orange-200"
+                        : "bg-red-100 text-orange-700 border-orange-600"
                     }
                     variant="outline"
                   >
@@ -178,20 +165,14 @@ export function ServiceAreaTable({
                 <TableCell className="px-4 py-3 text-center">
                   <div className="flex items-center justify-center gap-2">
                     {/* Toggle Switch */}
-                    <Switch
-                      checked={area.isActive}
-                      className={`${
-                        area.isActive ? "!bg-yellow-500" : "bg-gray-200"
-                      } relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200`}
-                      id="airplane-mode"
-                    />
+                    <SwitchWithState isActive={area.isActive} />
 
                     {/* Edit Button */}
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => setEditOpen(!editOpen)}
-                      className="h-8 w-8 p-0"
+                      className="h-8 w-8 p-0 cursor-pointer"
                       aria-label="Edit"
                     >
                       <Pencil className="h-4 w-4 text-gray-700" />
@@ -201,7 +182,7 @@ export function ServiceAreaTable({
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-8 w-8 p-0"
+                      className="h-8 w-8 p-0 cursor-pointer"
                       aria-label="Delete"
                     >
                       <Trash2 className="h-4 w-4 text-orange-500" />

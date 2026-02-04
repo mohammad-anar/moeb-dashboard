@@ -10,177 +10,128 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { IconBan, IconEye } from "@tabler/icons-react";
+import { IconBan, IconEye, IconTrash } from "@tabler/icons-react";
 import { Download, Search, Sliders } from "lucide-react";
 import { useState } from "react";
 import { DriverView } from "../page/driverManagement/DriverView";
 import { MyModal } from "../shared/MyModal";
 
-interface Product {
+interface Driver {
   id: string;
   name: string;
-  status: "Active" | "Suspended" | "Pending";
+  status: "Active" | "Hold";
   joinDate: string;
   vehicleType: string;
+  memberNumber: string;
 }
 
-interface ProductsTableProps {
-  products?: Product[];
+interface DriversTableProps {
+  drivers?: Driver[];
   handleSuspend: (id: string) => void;
   handleView: (id: string) => void;
 }
 
-const tableHeaders = ["Name", "Status", "Vehicle Type", "Join Date", "Actions"];
+const tableHeaders = [
+  "Name",
+  "Member Number",
+  "Status",
+  "Vehicle Type",
+  "Join Date",
+  "Actions",
+];
 
-const defaultProducts: Product[] = [
+const defaultDrivers: Driver[] = [
   {
     id: "1",
     name: "Driver1",
     status: "Active",
+    memberNumber: "FL-26001",
     joinDate: "10 Feb 2026",
     vehicleType: "SUV-21",
   },
   {
     id: "2",
     name: "Driver2",
-    status: "Suspended",
-    joinDate: "11 Feb 2026",
-    vehicleType: "Van-21",
+    status: "Hold",
+    memberNumber: "FL-26002",
+    joinDate: "12 Feb 2026",
+    vehicleType: "Sedan-11",
   },
   {
     id: "3",
     name: "Driver3",
-    status: "Pending",
-    joinDate: "01 Feb 2026",
-    vehicleType: "Truck-21",
+    status: "Active",
+    memberNumber: "FL-26003",
+    joinDate: "15 Feb 2026",
+    vehicleType: "Truck-05",
   },
   {
     id: "4",
     name: "Driver4",
-    status: "Active",
-    joinDate: "15 Jan 2026",
-    vehicleType: "Sedan-19",
+    status: "Hold",
+    memberNumber: "FL-26004",
+    joinDate: "18 Feb 2026",
+    vehicleType: "SUV-22",
   },
   {
     id: "5",
     name: "Driver5",
     status: "Active",
-    joinDate: "18 Jan 2026",
-    vehicleType: "SUV-20",
+    memberNumber: "FL-26005",
+    joinDate: "20 Feb 2026",
+    vehicleType: "Sedan-12",
   },
   {
     id: "6",
     name: "Driver6",
-    status: "Suspended",
-    joinDate: "22 Jan 2026",
-    vehicleType: "Van-18",
+    status: "Hold",
+    memberNumber: "FL-26006",
+    joinDate: "22 Feb 2026",
+    vehicleType: "Truck-06",
   },
   {
     id: "7",
     name: "Driver7",
-    status: "Pending",
-    joinDate: "25 Jan 2026",
-    vehicleType: "Truck-22",
+    status: "Active",
+    memberNumber: "FL-26007",
+    joinDate: "24 Feb 2026",
+    vehicleType: "SUV-23",
   },
   {
     id: "8",
     name: "Driver8",
-    status: "Active",
-    joinDate: "28 Jan 2026",
-    vehicleType: "SUV-23",
+    status: "Hold",
+    memberNumber: "FL-26008",
+    joinDate: "26 Feb 2026",
+    vehicleType: "Sedan-13",
   },
   {
     id: "9",
     name: "Driver9",
     status: "Active",
-    joinDate: "30 Jan 2026",
-    vehicleType: "Sedan-20",
+    memberNumber: "FL-26009",
+    joinDate: "28 Feb 2026",
+    vehicleType: "Truck-07",
   },
   {
     id: "10",
     name: "Driver10",
-    status: "Suspended",
-    joinDate: "02 Feb 2026",
-    vehicleType: "Van-19",
-  },
-  {
-    id: "11",
-    name: "Driver11",
-    status: "Pending",
-    joinDate: "04 Feb 2026",
-    vehicleType: "Truck-20",
-  },
-  {
-    id: "12",
-    name: "Driver12",
-    status: "Active",
-    joinDate: "06 Feb 2026",
-    vehicleType: "SUV-22",
-  },
-  {
-    id: "13",
-    name: "Driver13",
-    status: "Active",
-    joinDate: "08 Feb 2026",
-    vehicleType: "Sedan-21",
-  },
-  {
-    id: "14",
-    name: "Driver14",
-    status: "Suspended",
-    joinDate: "09 Feb 2026",
-    vehicleType: "Van-20",
-  },
-  {
-    id: "15",
-    name: "Driver15",
-    status: "Pending",
-    joinDate: "10 Feb 2026",
-    vehicleType: "Truck-23",
-  },
-  {
-    id: "16",
-    name: "Driver16",
-    status: "Active",
-    joinDate: "12 Feb 2026",
+    status: "Hold",
+    memberNumber: "FL-26010",
+    joinDate: "02 Mar 2026",
     vehicleType: "SUV-24",
-  },
-  {
-    id: "17",
-    name: "Driver17",
-    status: "Active",
-    joinDate: "13 Feb 2026",
-    vehicleType: "Sedan-22",
-  },
-  {
-    id: "18",
-    name: "Driver18",
-    status: "Suspended",
-    joinDate: "14 Feb 2026",
-    vehicleType: "Van-21",
-  },
-  {
-    id: "19",
-    name: "Driver19",
-    status: "Pending",
-    joinDate: "15 Feb 2026",
-    vehicleType: "Truck-24",
-  },
-  {
-    id: "20",
-    name: "Driver20",
-    status: "Active",
-    joinDate: "16 Feb 2026",
-    vehicleType: "SUV-25",
   },
 ];
 
 export function DriverTable({
-  products = defaultProducts,
+  drivers = defaultDrivers,
   handleView,
   handleSuspend,
-}: ProductsTableProps) {
+}: DriversTableProps) {
   const [open, setOpen] = useState(false);
+  const handleDelete = (id: string) => {
+    console.log({ id });
+  };
   return (
     <div className="space-y-6 rounded-xl">
       <div className="flex items-center gap-3 w-full">
@@ -217,7 +168,7 @@ export function DriverTable({
               {tableHeaders.map((title, idx) => (
                 <TableHead
                   key={title}
-                  className={`text-gray-700 font-semibold text-sm px-4 py-3 ${idx === 0 ? "text-left" : "text-center"}`}
+                  className={`text-gray-700 uppercase font-semibold text-sm px-4 py-3 ${idx === 0 ? "text-left" : "text-center"}`}
                 >
                   {title}
                 </TableHead>
@@ -226,34 +177,35 @@ export function DriverTable({
           </TableHeader>
 
           <TableBody>
-            {products.map((product) => (
+            {drivers?.map((driver) => (
               <TableRow
-                key={product.id}
+                key={driver.id}
                 className="border-b last:border-b-0 hover:bg-gray-50"
               >
-                <TableCell className="px-4 py-3">{product.name}</TableCell>
+                <TableCell className="px-4 py-3">{driver.name}</TableCell>
+                <TableCell className="px-4 py-3 text-gray-700 text-center">
+                  {driver.memberNumber}
+                </TableCell>
 
                 <TableCell className="px-4 py-3 text-center">
                   <Badge
                     className={
-                      product.status === "Active"
+                      driver.status === "Active"
                         ? "bg-green-50 text-green-700 border-green-300"
-                        : product.status === "Suspended"
-                          ? "bg-red-50 text-red-700 border-red-200"
-                          : "bg-orange-50 text-orange-700 border-orange-200"
+                        : "bg-orange-50 text-orange-700 border-orange-200"
                     }
                     variant="outline"
                   >
-                    {product.status}
+                    {driver.status}
                   </Badge>
                 </TableCell>
 
                 <TableCell className="px-4 py-3 text-gray-700 text-center">
-                  {product.vehicleType}
+                  {driver.vehicleType}
                 </TableCell>
 
                 <TableCell className="px-4 py-3 text-gray-700 text-center">
-                  {product.joinDate}
+                  {driver.joinDate}
                 </TableCell>
 
                 <TableCell className="px-4 py-3 text-center">
@@ -266,9 +218,15 @@ export function DriverTable({
                     </div>
                     <div
                       className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full"
-                      onClick={() => handleSuspend(product.id)}
+                      onClick={() => handleSuspend(driver.id)}
                     >
                       <IconBan color="red" size={16} />
+                    </div>
+                    <div
+                      className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full"
+                      onClick={() => handleDelete(driver.id)}
+                    >
+                      <IconTrash color="red" size={16} />
                     </div>
                   </div>
                 </TableCell>

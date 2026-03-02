@@ -30,7 +30,7 @@ export const description = "A simple area chart";
 
 const chartConfig = {
   desktop: {
-    label: "Value",
+    label: "Jobs",
     color: "var(--chart-1)",
   },
 } satisfies ChartConfig;

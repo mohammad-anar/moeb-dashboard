@@ -17,7 +17,9 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useRouter } from "next/navigation";
+import { setAccessToken, setUser } from "@/redux/features/auth";
+import Cookies from "js-cookie";
+import { useDispatch } from "react-redux";
 
 export function NavUser({
   user,
@@ -28,12 +30,22 @@ export function NavUser({
     avatar: string;
   };
 }) {
-  const router = useRouter();
+  const dispatch = useDispatch();
   const { isMobile } = useSidebar();
 
-  const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
-    router.push("/login");
+  const handleLogout = async () => {
+    try {
+      Cookies.remove("accessToken");
+      dispatch(setAccessToken(null));
+      dispatch(
+        setUser({
+          user: null,
+        }),
+      );
+      window.location.href = "/auth/login";
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

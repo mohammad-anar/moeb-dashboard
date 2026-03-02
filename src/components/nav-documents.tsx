@@ -6,12 +6,11 @@ import {
   SidebarGroup,
   SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
+  SidebarMenuItem
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
 
 export function NavDocuments({
   items,
@@ -36,7 +35,7 @@ export function NavDocuments({
             className={cn(
               "mb-2 duration-300 transition-all",
               pathName === item.url
-                ? "bg-amber-400 rounded-sm text-white"
+                ? "bg-light-black rounded-sm text-white"
                 : "text-black hover:bg-gray-200 hover:text-black rounded-sm duration-300",
             )}
             key={item.name}

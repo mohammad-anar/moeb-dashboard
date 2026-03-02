@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { TrendingUp } from "lucide-react";
@@ -7,6 +8,7 @@ import {
   CartesianGrid,
   ResponsiveContainer,
   XAxis,
+  YAxis,
 } from "recharts";
 
 import {
@@ -26,35 +28,31 @@ import {
 
 export const description = "A simple area chart";
 
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-];
-
 const chartConfig = {
   desktop: {
-    label: "Desktop",
+    label: "Value",
     color: "var(--chart-1)",
   },
 } satisfies ChartConfig;
 
-export function AnalyticsChart1() {
+export function AnalyticsChart1({ data }: any) {
+  const chartData = data?.data?.jobTrends?.map((item: any) => ({
+    month: item.label,
+    desktop: item.totalRevenue,
+  }));
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-xl">Monthly posting jobs</CardTitle>
         <CardDescription className="sr-only">
-          Showing total posting jobs for the last 6 months
+          Showing total posting jobs for the last 12 months
         </CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer
           config={chartConfig}
-          className="h-[180px] sm:h-[220px] md:h-[260px] lg:h-[300px] w-full"
+          className="h-[180px] sm:h-[220px] md:h-[260px] lg:h-[350px] w-full"
         >
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
@@ -76,6 +74,14 @@ export function AnalyticsChart1() {
                 tickMargin={8}
                 tickFormatter={(value) => value.slice(0, 3)}
               />
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                allowDecimals={false}
+                domain={[0, "dataMax + 1"]}
+                tickFormatter={(value) => `${value}`}
+              />
               <ChartTooltip
                 cursor={false}
                 content={<ChartTooltipContent indicator="line" />}
@@ -91,18 +97,7 @@ export function AnalyticsChart1() {
           </ResponsiveContainer>
         </ChartContainer>
       </CardContent>
-      <CardFooter>
-        {/* <div className="flex w-full items-start gap-2 text-sm">
-          <div className="grid gap-2">
-            <div className="flex items-center gap-2 leading-none font-medium">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-            </div>
-            <div className="text-muted-foreground flex items-center gap-2 leading-none">
-              January - June 2024
-            </div>
-          </div>
-        </div> */}
-      </CardFooter>
+      <CardFooter></CardFooter>
     </Card>
   );
 }

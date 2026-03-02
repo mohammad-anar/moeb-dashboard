@@ -70,7 +70,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             {/* <SidebarMenuButton asChild className=" flex items-center border"> */}
-            <div className="flex items-center justify-center px-8 pb-2">
+            <div className="flex items-center justify-center pb-2">
               <Link
                 href="/"
                 className="block w-full duration-300  overflow-hidden"

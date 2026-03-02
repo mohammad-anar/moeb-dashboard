@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import {
   IconClock,
   IconTarget,
-  IconTrendingDown,
-  IconTrendingUp,
   IconUser,
   IconUsersGroup,
 } from "@tabler/icons-react";
@@ -16,41 +16,42 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useGetAllStatsQuery } from "@/redux/service/dashboard-stats/analyticsApi";
 
-export function SectionCards() {
+export function SectionCards({ data }: any) {
   const statisticsData = [
     {
       id: 1,
-      amount: 412,
+      amount: data?.data?.users?.total || 0,
       icon: IconUser,
-      percentage: "+23%",
-      description: "Total registered drivers",
+      percentage: data?.data?.users?.formattedGrowth || "0%",
+      description: "Total registered users",
       bgColor: "purple-100",
       iconColor: "purple",
     },
     {
       id: 2,
-      amount: 4,
+      amount: data?.data?.pendingDrivers?.total || 0,
       icon: IconClock,
-      percentage: "+12%",
+      percentage: data?.data?.pendingDrivers?.formattedGrowth || "0%",
       description: "Pending drivers approvals",
       bgColor: "gray-100",
       iconColor: "gray",
     },
     {
       id: 3,
-      amount: 142,
+      amount: data?.data?.activeJobs?.total || 0,
       icon: IconUsersGroup,
-      percentage: "+23%",
+      percentage: data?.data?.activeJobs?.formattedGrowth || "0%",
       description: "Active job offers",
       bgColor: "blue-100",
       iconColor: "blue",
     },
     {
       id: 4,
-      amount: 321,
+      amount: data?.data?.totalItems?.total || 0,
       icon: IconTarget,
-      percentage: "+4%",
+      percentage: data?.data?.totalItems?.formattedGrowth || "0%",
       description: "Total Marketplace listings",
       bgColor: "orange-100",
       iconColor: "orange",

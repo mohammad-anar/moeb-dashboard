@@ -1,13 +1,22 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { Eye, EyeOff, Loader, Lock, Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import logo from "@/assets/logo.png";
+import Cookies from "js-cookie";
+import { toast } from "sonner";
+import { useLoginMutation } from "@/redux/service/auth/authApi";
+import { useDispatch } from "react-redux";
+import {
+  setAccessToken,
+  setRefreshToken,
+  setUser,
+} from "@/redux/features/auth";
 
 interface LoginForm {
   email: string;
@@ -16,6 +25,7 @@ interface LoginForm {
 
 export default function LoginPage() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const {
     register,
@@ -28,10 +38,56 @@ export default function LoginPage() {
     },
   });
 
+  const [login, { isLoading }] = useLoginMutation();
+
   const onSubmit = (data: LoginForm) => {
-    console.log("Form submitted:", data);
-    localStorage.setItem("isLoggedIn", "true");
-    router.push("/");
+    try {
+      toast.promise(login(data).unwrap(), {
+        loading: "Logging in...",
+        error: (err) => {
+          console.log({ err });
+          return (
+            err.message ||
+            err.data?.message ||
+            "Something went wrong! Try again."
+          );
+        },
+        success: (data) => {
+          const { user, accessToken, refreshToken } = data.data;
+
+          // Save tokens in cookies if needed
+          Cookies.set("accessToken", accessToken, {
+            expires: 1,
+            path: "/",
+            sameSite: "lax",
+            secure: false,
+          });
+          Cookies.set("refreshToken", refreshToken, {
+            expires: 7,
+            path: "/",
+            sameSite: "lax",
+            secure: false,
+          });
+
+          // Update Redux slice
+          dispatch(
+            setUser({
+              user,
+            }),
+          );
+          dispatch(setAccessToken(accessToken));
+          dispatch(setRefreshToken(refreshToken));
+
+          // Redirect to dashboard
+          router.push("/dashboard");
+          return data?.message;
+        },
+      });
+
+      // ✅ RTK Query unwrap returns the response data directly
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
 
   return (
@@ -133,10 +189,11 @@ export default function LoginPage() {
 
         {/* Sign In Button */}
         <Button
+          disabled={isLoading}
           type="submit"
           className="w-full py-6 uppercase rounded-lg font-semibold bg-light-black text-white text-lg cursor-pointer transition-colors"
         >
-          Log in
+          {isLoading && <Loader className="animate-spin" />} Log in
         </Button>
       </form>
     </div>

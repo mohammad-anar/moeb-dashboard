@@ -27,37 +27,37 @@ const data = {
   documents: [
     {
       name: "Dashboard",
-      url: "/",
+      url: "/dashboard",
       icon: IconDashboard,
     },
     {
       name: "Driver Management",
-      url: "/driver",
+      url: "/dashboard/driver",
       icon: IconUsersGroup,
     },
     {
       name: "Deals Management",
-      url: "/deals",
+      url: "/dashboard/deals",
       icon: IconCalendarUser,
     },
     {
       name: "Marketplace Management",
-      url: "/marketplace",
+      url: "/dashboard/marketplace",
       icon: IconCalendarSearch,
     },
     {
       name: "Support",
-      url: "/support",
+      url: "/dashboard/support",
       icon: IconMessage,
     },
     {
       name: "Terms & Conditions",
-      url: "/terms-and-condition",
+      url: "/dashboard/terms-and-condition",
       icon: IconNotes,
     },
     {
       name: "Service Area",
-      url: "/service-area",
+      url: "/dashboard/service-area",
       icon: IconMapPin,
     },
   ],

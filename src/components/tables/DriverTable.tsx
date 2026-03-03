@@ -15,9 +15,12 @@ import { Download, Search, Sliders } from "lucide-react";
 import { useState } from "react";
 import { DriverView } from "../page/driverManagement/DriverView";
 import { MyModal } from "../shared/MyModal";
+import { Skeleton } from "../ui/skeleton";
+import { useBlockUserMutation, useDeleteDriverMutation } from "@/redux/service/driver/driverApi";
+import { toast } from "sonner";
 
 interface Driver {
-  id: string;
+  _id: string;
   name: string;
   status: "Active" | "Hold";
   joinDate: string;
@@ -27,8 +30,7 @@ interface Driver {
 
 interface DriversTableProps {
   drivers?: Driver[];
-  handleSuspend: (id: string) => void;
-  handleView: (id: string) => void;
+  isLoading?: boolean;
 }
 
 const tableHeaders = [
@@ -40,97 +42,38 @@ const tableHeaders = [
   "Actions",
 ];
 
-const defaultDrivers: Driver[] = [
-  {
-    id: "1",
-    name: "Driver1",
-    status: "Active",
-    memberNumber: "FL-26001",
-    joinDate: "10 Feb 2026",
-    vehicleType: "SUV-21",
-  },
-  {
-    id: "2",
-    name: "Driver2",
-    status: "Hold",
-    memberNumber: "FL-26002",
-    joinDate: "12 Feb 2026",
-    vehicleType: "Sedan-11",
-  },
-  {
-    id: "3",
-    name: "Driver3",
-    status: "Active",
-    memberNumber: "FL-26003",
-    joinDate: "15 Feb 2026",
-    vehicleType: "Truck-05",
-  },
-  {
-    id: "4",
-    name: "Driver4",
-    status: "Hold",
-    memberNumber: "FL-26004",
-    joinDate: "18 Feb 2026",
-    vehicleType: "SUV-22",
-  },
-  {
-    id: "5",
-    name: "Driver5",
-    status: "Active",
-    memberNumber: "FL-26005",
-    joinDate: "20 Feb 2026",
-    vehicleType: "Sedan-12",
-  },
-  {
-    id: "6",
-    name: "Driver6",
-    status: "Hold",
-    memberNumber: "FL-26006",
-    joinDate: "22 Feb 2026",
-    vehicleType: "Truck-06",
-  },
-  {
-    id: "7",
-    name: "Driver7",
-    status: "Active",
-    memberNumber: "FL-26007",
-    joinDate: "24 Feb 2026",
-    vehicleType: "SUV-23",
-  },
-  {
-    id: "8",
-    name: "Driver8",
-    status: "Hold",
-    memberNumber: "FL-26008",
-    joinDate: "26 Feb 2026",
-    vehicleType: "Sedan-13",
-  },
-  {
-    id: "9",
-    name: "Driver9",
-    status: "Active",
-    memberNumber: "FL-26009",
-    joinDate: "28 Feb 2026",
-    vehicleType: "Truck-07",
-  },
-  {
-    id: "10",
-    name: "Driver10",
-    status: "Hold",
-    memberNumber: "FL-26010",
-    joinDate: "02 Mar 2026",
-    vehicleType: "SUV-24",
-  },
-];
-
-export function DriverTable({
-  drivers = defaultDrivers,
-  handleView,
-  handleSuspend,
-}: DriversTableProps) {
+export function DriverTable({ drivers, isLoading = false }: DriversTableProps) {
+  const [driverId, setDriverId] = useState<string>("");
   const [open, setOpen] = useState(false);
+
+  // api
+  const [blockUser] = useBlockUserMutation();
+  const [deleteDriver] = useDeleteDriverMutation();
+
   const handleDelete = (id: string) => {
-    console.log({ id });
+    try {
+      toast.promise(deleteDriver(id).unwrap(), {
+        loading: "Deleting driver...",
+        success: "Driver deleted successfully.",
+        error: "Failed to delete driver. Please try again.",
+      });
+    } catch (error) {
+      toast.error("Failed to delete driver. Please try again.");
+    }
+  };
+
+  const handleSuspend = (id: string) => {
+    try {
+      toast.promise(blockUser(id).unwrap(), {
+        loading: "Blocking driver...",
+        success: "Driver blocked successfully.",
+        error: "Failed to block driver. Please try again.",
+      });
+
+      setOpen(false);
+    } catch (error) {
+      toast.error("Failed to block driver. Please try again.");
+    }
   };
   return (
     <div className="space-y-6 rounded-xl">
@@ -176,67 +119,84 @@ export function DriverTable({
             </TableRow>
           </TableHeader>
 
-          <TableBody>
-            {drivers?.map((driver) => (
-              <TableRow
-                key={driver.id}
-                className="border-b last:border-b-0 hover:bg-gray-50"
-              >
-                <TableCell className="px-4 py-3">{driver.name}</TableCell>
-                <TableCell className="px-4 py-3 text-gray-700 text-center">
-                  {driver.memberNumber}
-                </TableCell>
+          {isLoading ? (
+            <TableBody>
+              {Array.from({ length: 5 }).map((_, index) => (
+                <TableRow key={index} className="border-b last:border-b-0">
+                  {Array.from({ length: 6 }).map((_, colIndex) => (
+                    <TableCell key={colIndex} className="px-4 py-3">
+                      <Skeleton className="h-4 w-full" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          ) : (
+            <TableBody>
+              {drivers?.map((driver) => (
+                <TableRow
+                  key={driver._id}
+                  className="border-b last:border-b-0 hover:bg-gray-50"
+                >
+                  <TableCell className="px-4 py-3">{driver.name}</TableCell>
+                  <TableCell className="px-4 py-3 text-gray-700 text-center">
+                    {driver.memberNumber}
+                  </TableCell>
 
-                <TableCell className="px-4 py-3 text-center">
-                  <Badge
-                    className={
-                      driver.status === "Active"
-                        ? "bg-green-50 text-green-700 border-green-300"
-                        : "bg-orange-50 text-orange-700 border-orange-200"
-                    }
-                    variant="outline"
-                  >
-                    {driver.status}
-                  </Badge>
-                </TableCell>
-
-                <TableCell className="px-4 py-3 text-gray-700 text-center">
-                  {driver.vehicleType}
-                </TableCell>
-
-                <TableCell className="px-4 py-3 text-gray-700 text-center">
-                  {driver.joinDate}
-                </TableCell>
-
-                <TableCell className="px-4 py-3 text-center">
-                  <div className="flex items-center justify-center gap-5">
-                    <div
-                      className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full"
-                      onClick={() => setOpen(!open)}
+                  <TableCell className="px-4 py-3 text-center">
+                    <Badge
+                      className={
+                        driver.status === "Active"
+                          ? "bg-green-50 text-green-700 border-green-300"
+                          : "bg-orange-50 text-orange-700 border-orange-200"
+                      }
+                      variant="outline"
                     >
-                      <IconEye color="blue" size={25} />
+                      {driver.status}
+                    </Badge>
+                  </TableCell>
+
+                  <TableCell className="px-4 py-3 text-gray-700 text-center">
+                    {driver.vehicleType}
+                  </TableCell>
+
+                  <TableCell className="px-4 py-3 text-gray-700 text-center">
+                    {driver.joinDate}
+                  </TableCell>
+
+                  <TableCell className="px-4 py-3 text-center">
+                    <div className="flex items-center justify-center gap-5">
+                      <div
+                        className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full"
+                        onClick={() => {
+                          setOpen(!open);
+                          setDriverId(driver._id);
+                        }}
+                      >
+                        <IconEye color="blue" size={25} />
+                      </div>
+                      <div
+                        className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full"
+                        onClick={() => handleSuspend(driver._id)}
+                      >
+                        <IconBan color="red" size={16} />
+                      </div>
+                      <div
+                        className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full"
+                        onClick={() => handleDelete(driver._id)}
+                      >
+                        <IconTrash color="red" size={16} />
+                      </div>
                     </div>
-                    <div
-                      className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full"
-                      onClick={() => handleSuspend(driver.id)}
-                    >
-                      <IconBan color="red" size={16} />
-                    </div>
-                    <div
-                      className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full"
-                      onClick={() => handleDelete(driver.id)}
-                    >
-                      <IconTrash color="red" size={16} />
-                    </div>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          )}
         </Table>
       </div>
       <MyModal open={open} onOpenChange={(val: boolean) => setOpen(val)}>
-        <DriverView />
+        <DriverView setOpen={setOpen} driverId={driverId} />
       </MyModal>
     </div>
   );

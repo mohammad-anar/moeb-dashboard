@@ -1,11 +1,53 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { X, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  useApproveUserMutation,
+  useBlockUserMutation,
+  useGetUserDetailsByIdQuery,
+} from "@/redux/service/driver/driverApi";
+import { toast } from "sonner";
 
-export function DriverView() {
+export function DriverView({ driverId, setOpen }: any) {
+  const { data, isLoading } = useGetUserDetailsByIdQuery(driverId, {
+    skip: !driverId,
+  });
+
+  const [approveUser] = useApproveUserMutation();
+  const [blockUser] = useBlockUserMutation();
+  const driver = data?.data;
+
+  const handleBlock = (id: string) => {
+    try {
+      toast.promise(blockUser(id).unwrap(), {
+        loading: "Blocking driver...",
+        success: "Driver blocked successfully.",
+        error: "Failed to block driver. Please try again.",
+      });
+
+      setOpen(false);
+    } catch (error) {
+      toast.error("Failed to block driver. Please try again.");
+    }
+  };
+
+  const handleApprove = (id: string) => {
+    try {
+      toast.promise(approveUser(id).unwrap(), {
+        loading: "Approving driver...",
+        success: "Driver approved successfully.",
+        error: "Failed to approve driver. Please try again.",
+      });
+      setOpen(false);
+    } catch (error) {
+      toast.error("Failed to approve driver. Please try again.");
+    }
+  };
+
   return (
-    <div className="bg-white  w-full max-w-xl ">
+    <div className="bg-white w-full max-w-xl">
       {/* Header */}
       <div className="p-6 pb-4 border-b">
         <h2 className="text-xl font-bold text-foreground">
@@ -13,18 +55,22 @@ export function DriverView() {
         </h2>
         <div className="mt-2">
           <span className="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded">
-            pending
+            {driver?.status ?? "Pending"}
           </span>
         </div>
       </div>
 
-      {/* Status Badge */}
-
       {/* Driver Info */}
       <div className="px-6 pt-6 pb-4">
-        <h3 className="text-lg font-bold text-foreground">Michael Chen</h3>
-        <p className="text-sm text-muted-foreground">michael.chen@gmail.com</p>
-        <p className="text-sm text-muted-foreground">Elite Transport Inc.</p>
+        <h3 className="text-lg font-bold text-foreground">
+          {driver?.name ?? "N/A"}
+        </h3>
+        <p className="text-sm text-muted-foreground">
+          {driver?.email ?? "N/A"}
+        </p>
+        <p className="text-sm text-muted-foreground">
+          {driver?.company ?? "N/A"}
+        </p>
       </div>
 
       {/* Metadata */}
@@ -33,13 +79,19 @@ export function DriverView() {
           <p className="text-xs font-semibold text-muted-foreground uppercase">
             Created
           </p>
-          <p className="text-sm font-semibold text-foreground">Jan 2, 2026</p>
+          <p className="text-sm font-semibold text-foreground">
+            {driver?.createdAt
+              ? new Date(driver.createdAt).toLocaleDateString()
+              : "N/A"}
+          </p>
         </div>
         <div>
           <p className="text-xs font-semibold text-muted-foreground uppercase">
             Status
           </p>
-          <p className="text-sm font-semibold text-foreground">Pending</p>
+          <p className="text-sm font-semibold text-foreground">
+            {driver?.status ?? "Pending"}
+          </p>
         </div>
       </div>
 
@@ -48,44 +100,54 @@ export function DriverView() {
         <h4 className="text-sm font-bold text-foreground mb-4">
           Vehicle Details
         </h4>
-        <div className="space-y-3">
-          <div className="flex items-start gap-3">
-            <div className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex-shrink-0">
-              1
+        {driver?.vehicles?.map((vehicle: any, index: number) => (
+          <div key={index} className="space-y-3">
+            <div className="flex items-start gap-3">
+              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex-shrink-0">
+                1
+              </div>
+              <div>
+                <p className="text-sm text-foreground">Make & Model</p>
+                <p className="text-sm font-semibold text-amber-600">
+                  {vehicle ? `${vehicle.make} ${vehicle.model}` : "N/A"}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm text-foreground">Make & Model</p>
-              <p className="text-sm font-semibold text-amber-600">Sedan X</p>
+            <div className="flex items-start gap-3">
+              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex-shrink-0">
+                2
+              </div>
+              <div>
+                <p className="text-sm text-foreground">Color</p>
+                <p className="text-sm font-semibold text-amber-600">
+                  {vehicle?.colorInside ?? "N/A"}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex-shrink-0">
+                3
+              </div>
+              <div>
+                <p className="text-sm text-foreground">Year</p>
+                <p className="text-sm font-semibold text-amber-600">
+                  {vehicle?.year ?? "N/A"}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex-shrink-0">
+                4
+              </div>
+              <div>
+                <p className="text-sm text-foreground">License Plate</p>
+                <p className="text-sm font-semibold text-amber-600">
+                  {vehicle?.licensePlate ?? "N/A"}
+                </p>
+              </div>
             </div>
           </div>
-          <div className="flex items-start gap-3">
-            <div className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex-shrink-0">
-              2
-            </div>
-            <div>
-              <p className="text-sm text-foreground">Color</p>
-              <p className="text-sm font-semibold text-amber-600">Black</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-3">
-            <div className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex-shrink-0">
-              3
-            </div>
-            <div>
-              <p className="text-sm text-foreground">Year</p>
-              <p className="text-sm font-semibold text-amber-600">2024</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-3">
-            <div className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex-shrink-0">
-              4
-            </div>
-            <div>
-              <p className="text-sm text-foreground">License Plate</p>
-              <p className="text-sm font-semibold text-amber-600">ABC-1234</p>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* Documents */}
@@ -93,16 +155,11 @@ export function DriverView() {
         <h4 className="text-sm font-bold text-foreground mb-4">Documents</h4>
         <div className="grid grid-cols-2 gap-3">
           <div className="bg-blue-100 rounded-lg aspect-[3/4] flex items-center justify-center">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">ID</div>
-              <p className="text-xs text-blue-600 mt-1">CARD</p>
-            </div>
-          </div>
-          <div className="bg-blue-100 rounded-lg aspect-[3/4] flex items-center justify-center">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">DL</div>
-              <p className="text-xs text-blue-600 mt-1">LICENSE</p>
-            </div>
+            <img
+              src={driver?.vehicleRegistration?.image}
+              alt="Front View"
+              className="w-full h-full object-cover rounded-lg"
+            />
           </div>
         </div>
       </div>
@@ -113,8 +170,33 @@ export function DriverView() {
           Vehicle Photos
         </h4>
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-gray-800 rounded-lg aspect-video"></div>
-          <div className="bg-gray-800 rounded-lg aspect-video"></div>
+          <div className="bg-gray-800 rounded-lg aspect-video">
+            {driver?.vehiclePhotos?.frontView && (
+              <img
+                src={driver?.vehiclePhotos?.frontView}
+                alt="Front View"
+                className="w-full h-full object-cover rounded-lg"
+              />
+            )}
+          </div>
+          <div className="bg-gray-800 rounded-lg aspect-video">
+            {driver?.vehiclePhotos?.interiorView && (
+              <img
+                src={driver?.vehiclePhotos?.interiorView}
+                alt="Front View"
+                className="w-full h-full object-cover rounded-lg"
+              />
+            )}
+          </div>
+          <div className="bg-gray-800 rounded-lg aspect-video">
+            {driver?.vehiclePhotos?.rearView && (
+              <img
+                src={driver?.vehiclePhotos?.rearView}
+                alt="Front View"
+                className="w-full h-full object-cover rounded-lg"
+              />
+            )}
+          </div>
         </div>
       </div>
 
@@ -122,11 +204,15 @@ export function DriverView() {
       <div className="px-6 pb-6 flex gap-3">
         <Button
           variant="outline"
+          onClick={() => handleBlock(driver?._id)}
           className="flex-1 bg-red-50 text-red-600 hover:bg-red-100 border-red-200"
         >
           Reject
         </Button>
-        <Button className="flex-1 bg-black text-white hover:bg-gray-900 flex items-center justify-center gap-2">
+        <Button
+          onClick={() => handleApprove(driver?._id)}
+          className="flex-1 bg-black text-white hover:bg-gray-900 flex items-center justify-center gap-2"
+        >
           <CheckCircle2 className="w-4 h-4" />
           Approve
         </Button>

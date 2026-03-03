@@ -9,12 +9,25 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetDriverStatsQuery } from "@/redux/service/driver/driverApi";
+import {
+  useGetAllDriversQuery,
+  useGetDriverStatsQuery,
+} from "@/redux/service/driver/driverApi";
+import { useState } from "react";
 
 const DriverPage = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+
   const { data: driverStats, isLoading } = useGetDriverStatsQuery(undefined);
 
-  console.log(driverStats);
+  const { data: drivers, isLoading: isDriversLoading } = useGetAllDriversQuery({
+    page: currentPage,
+    limit,
+  });
+
+  console.log(drivers);
+
   const statData = [
     {
       title: "Total Drivers",
@@ -68,8 +81,15 @@ const DriverPage = () => {
       </div>
       {/* tables */}
       <div className="mt-10">
-        <DriverTable handleView={handleView} handleSuspend={handleSuspend} />
-        <MyPagination />
+        <DriverTable
+          drivers={drivers?.data}
+          isLoading={isDriversLoading}
+        />
+        <MyPagination
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+          totalPages={drivers?.pagination?.totalPage}
+        />
       </div>
     </div>
   );

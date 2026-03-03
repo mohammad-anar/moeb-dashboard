@@ -1,23 +1,46 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { useUpdateServiceAreaMutation } from "@/redux/service/serviceArea/serviceAreaApi";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 interface AddServiceAreaFormInputs {
   areaName: string;
   city: string;
 }
 
-export function EditServiceAreaForm() {
+export function EditServiceAreaForm({ defaultValues }: any) {
   const {
     register,
+    reset,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<AddServiceAreaFormInputs>({
     mode: "onBlur",
+    defaultValues: {
+      areaName: defaultValues?.areaName || "",
+      city: defaultValues?.city || "",
+    },
   });
 
+  const [updateServiceArea] = useUpdateServiceAreaMutation();
+
   const onSubmit = (data: { areaName: string; city: string }) => {
-    console.log(data);
+    try {
+      toast.promise(
+        updateServiceArea({ id: defaultValues?._id, data }).unwrap(),
+        {
+          loading: "Updating service area...",
+          success: "Service area updated successfully!",
+          error: "Failed to update service area. Please try again.",
+        },
+      );
+
+      reset();
+    } catch (error) {
+      toast.error("Failed to update service area. Please try again.");
+    }
   };
 
   return (

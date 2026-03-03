@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +18,11 @@ import { MyModal } from "../shared/MyModal";
 import { Switch } from "../ui/switch";
 import { EditServiceAreaForm } from "../forms/EditServiceAreaForm";
 import SwitchWithState from "../shared/SwitchWithState";
+import {
+  useDeleteServiceAreaMutation,
+  useUpdateServiceAreaMutation,
+} from "@/redux/service/serviceArea/serviceAreaApi";
+import { toast } from "sonner";
 
 interface Service {
   id: string;
@@ -27,79 +33,112 @@ interface Service {
 }
 
 interface ServiceAreaProps {
-  areas?: Service[];
-  handleSuspend: (id: string) => void;
-  handleView: (id: string) => void;
+  areas: any;
+  setSearchTerm: (term: string) => void;
 }
 
 const tableHeaders = ["Area Name", "Status", "City", "Actions"];
 
-const defaultServices: Service[] = [
-  {
-    id: "1",
-    areaName: "Florida",
-    status: "Open",
-    city: "Miami, Orlando, Palm Beach, Fort Lauderdale, Naples, Tampa",
-    isActive: true,
-  },
-  {
-    id: "2",
-    areaName: "Texas",
-    status: "Close",
-    city: "Austin, Dallas, Houston",
-    isActive: true,
-  },
-  {
-    id: "3",
-    areaName: "New York",
-    status: "Close",
-    city: "New York",
-    isActive: true,
-  },
-  {
-    id: "4",
-    areaName: "Massachusetts",
-    status: "Close",
-    city: "Boston",
-    isActive: true,
-  },
-  {
-    id: "5",
-    areaName: "District of Columbia",
-    status: "Close",
-    city: "Washington DC",
-    isActive: false,
-  },
-  {
-    id: "6",
-    areaName: "Georgia",
-    status: "Close",
-    city: "Atlanta",
-    isActive: true,
-  },
-  {
-    id: "7",
-    areaName: "Nevada",
-    status: "Close",
-    city: "Las Vegas",
-    isActive: false,
-  },
-  {
-    id: "8",
-    areaName: "Washington",
-    status: "Close",
-    city: "Seattle",
-    isActive: true,
-  },
-];
+// const defaultServices: Service[] = [
+//   {
+//     id: "1",
+//     areaName: "Florida",
+//     status: "Open",
+//     city: "Miami, Orlando, Palm Beach, Fort Lauderdale, Naples, Tampa",
+//     isActive: true,
+//   },
+//   {
+//     id: "2",
+//     areaName: "Texas",
+//     status: "Close",
+//     city: "Austin, Dallas, Houston",
+//     isActive: true,
+//   },
+//   {
+//     id: "3",
+//     areaName: "New York",
+//     status: "Close",
+//     city: "New York",
+//     isActive: true,
+//   },
+//   {
+//     id: "4",
+//     areaName: "Massachusetts",
+//     status: "Close",
+//     city: "Boston",
+//     isActive: true,
+//   },
+//   {
+//     id: "5",
+//     areaName: "District of Columbia",
+//     status: "Close",
+//     city: "Washington DC",
+//     isActive: false,
+//   },
+//   {
+//     id: "6",
+//     areaName: "Georgia",
+//     status: "Close",
+//     city: "Atlanta",
+//     isActive: true,
+//   },
+//   {
+//     id: "7",
+//     areaName: "Nevada",
+//     status: "Close",
+//     city: "Las Vegas",
+//     isActive: false,
+//   },
+//   {
+//     id: "8",
+//     areaName: "Washington",
+//     status: "Close",
+//     city: "Seattle",
+//     isActive: true,
+//   },
+// ];
 
-export function ServiceAreaTable({
-  areas = defaultServices,
-  handleView,
-  handleSuspend,
-}: ServiceAreaProps) {
+export function ServiceAreaTable({ areas, setSearchTerm }: ServiceAreaProps) {
   const [open, setOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState<any>(null);
+
+  const [deleteServiceArea] = useDeleteServiceAreaMutation();
+  const [updateServiceArea] = useUpdateServiceAreaMutation();
+
+  const handleDelete = (id: string) => {
+    try {
+      toast.promise(deleteServiceArea(id).unwrap(), {
+        loading: "Deleting the service area...",
+        success: "Service area deleted successfully!",
+        error: "Failed to delete the service area. Please try again.",
+      });
+    } catch (error) {
+      toast.error("Failed to delete service area. Please try again.");
+    }
+  };
+
+  const handleSwitchChange = (isActive: boolean, id: string) => {
+    // Here you can make an API call to update the status of the service area
+    console.log(
+      `Service area with ID ${id} is now ${isActive ? "ACTIVE" : "INACTIVE"}`,
+    );
+    try {
+      toast.promise(
+        updateServiceArea({
+          id,
+          data: { status: isActive ? "ACTIVE" : "INACTIVE" },
+        }).unwrap(),
+        {
+          loading: "Updating service area status...",
+          success: "Service area status updated successfully!",
+          error: "Failed to update service area status. Please try again.",
+        },
+      );
+    } catch (error) {
+      toast.error("Failed to update service area status. Please try again.");
+    }
+  };
   return (
     <div className="space-y-6 rounded-xl">
       <div className="flex items-center gap-3 w-full">
@@ -107,6 +146,7 @@ export function ServiceAreaTable({
           <Search className="w-5 h-5 text-gray-400" />
           <input
             type="text"
+            onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by name or email..."
             className="flex-1 bg-transparent text-sm outline-none text-gray-700 placeholder:text-gray-400"
           />
@@ -138,40 +178,47 @@ export function ServiceAreaTable({
           </TableHeader>
 
           <TableBody>
-            {areas.map((area) => (
+            {areas?.map((area: any) => (
               <TableRow
-                key={area.id}
+                key={area?.id}
                 className="border-b last:border-b-0 hover:bg-gray-50"
               >
-                <TableCell className="px-4 py-3">{area.areaName}</TableCell>
+                <TableCell className="px-4 py-3">{area?.areaName}</TableCell>
 
                 <TableCell className="px-4 py-3 text-center">
                   <Badge
                     className={
-                      area.status === "Open"
+                      area?.status === "ACTIVE"
                         ? "bg-green-50 text-green-700 border-green-300"
                         : "bg-red-100 text-orange-700 border-orange-600"
                     }
                     variant="outline"
                   >
-                    {area.status}
+                    {area?.status}
                   </Badge>
                 </TableCell>
 
                 <TableCell className="px-4 py-3 text-gray-700 text-center">
-                  {area.city}
+                  {area?.city}
                 </TableCell>
 
                 <TableCell className="px-4 py-3 text-center">
                   <div className="flex items-center justify-center gap-2">
                     {/* Toggle Switch */}
-                    <SwitchWithState isActive={area.isActive} />
+                    <SwitchWithState
+                      id={area?._id}
+                      onchange={handleSwitchChange}
+                      isActive={area?.status === "ACTIVE" ? true : false}
+                    />
 
                     {/* Edit Button */}
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setEditOpen(!editOpen)}
+                      onClick={() => {
+                        setEditOpen(!editOpen);
+                        setSelectedService(area);
+                      }}
                       className="h-8 w-8 p-0 cursor-pointer"
                       aria-label="Edit"
                     >
@@ -180,6 +227,7 @@ export function ServiceAreaTable({
 
                     {/* Delete Button */}
                     <Button
+                      onClick={() => handleDelete(area?._id)}
                       variant="ghost"
                       size="sm"
                       className="h-8 w-8 p-0 cursor-pointer"
@@ -201,7 +249,7 @@ export function ServiceAreaTable({
         open={editOpen}
         onOpenChange={(val: boolean) => setEditOpen(val)}
       >
-        <EditServiceAreaForm />
+        <EditServiceAreaForm defaultValues={selectedService} />
       </MyModal>
     </div>
   );

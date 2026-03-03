@@ -1,14 +1,29 @@
 "use client";
 import { MyPagination } from "@/components/shared/MyPagination";
 import { ServiceAreaTable } from "@/components/tables/ServiceAreaTable";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useGetAllServiceAreaQuery } from "@/redux/service/serviceArea/serviceAreaApi";
+import { useState } from "react";
 
 const ServiceAreaPage = () => {
-  const handleView = () => {
-    console.log("click");
+  const [currentPage, setCurrentpage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+  const params: { page: number; limit: number; searchTerm?: string } = {
+    page: currentPage,
+    limit: limit,
   };
-  const handleSuspend = () => {
-    console.log("click");
-  };
+
+  if (searchTerm) {
+    params.searchTerm = debouncedSearchTerm;
+  }
+
+  // api
+  const { data, isLoading } = useGetAllServiceAreaQuery(params);
+
   return (
     <div className="p-5">
       <div className="mb-10">
@@ -18,11 +33,12 @@ const ServiceAreaPage = () => {
 
       {/* tables */}
       <div className="mt-10">
-        <ServiceAreaTable
-          handleView={handleView}
-          handleSuspend={handleSuspend}
+        <ServiceAreaTable areas={data?.data} setSearchTerm={setSearchTerm} />
+        <MyPagination
+          currentPage={currentPage}
+          onPageChange={setCurrentpage}
+          totalPages={data?.pagination?.totalPage}
         />
-        <MyPagination />
       </div>
     </div>
   );

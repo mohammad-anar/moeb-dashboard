@@ -1,6 +1,8 @@
 "use client";
 
+import { useCreateServiceAreaMutation } from "@/redux/service/serviceArea/serviceAreaApi";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 interface AddServiceAreaFormInputs {
   areaName: string;
@@ -10,14 +12,26 @@ interface AddServiceAreaFormInputs {
 export function AddServiceAreaForm() {
   const {
     register,
+    reset,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<AddServiceAreaFormInputs>({
     mode: "onBlur",
   });
 
+  const [createServiceArea] = useCreateServiceAreaMutation();
+
   const onSubmit = (data: { areaName: string; city: string }) => {
-    console.log(data);
+    try {
+      toast.promise(createServiceArea(data).unwrap(), {
+        loading: "Adding service area...",
+        success: "Service area added successfully!",
+        error: "Failed to add service area. Please try again.",
+      });
+      reset();
+    } catch (error) {
+      toast.error("Failed to add service area. Please try again.");
+    }
   };
 
   return (

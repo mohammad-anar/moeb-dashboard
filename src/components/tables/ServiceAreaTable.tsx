@@ -23,18 +23,12 @@ import {
   useUpdateServiceAreaMutation,
 } from "@/redux/service/serviceArea/serviceAreaApi";
 import { toast } from "sonner";
-
-interface Service {
-  id: string;
-  areaName: string;
-  status: "Open" | "Close";
-  city: string;
-  isActive: boolean;
-}
+import { Skeleton } from "../ui/skeleton";
 
 interface ServiceAreaProps {
   areas: any;
   setSearchTerm: (term: string) => void;
+  loading: boolean;
 }
 
 const tableHeaders = ["Area Name", "Status", "City", "Actions"];
@@ -98,7 +92,11 @@ const tableHeaders = ["Area Name", "Status", "City", "Actions"];
 //   },
 // ];
 
-export function ServiceAreaTable({ areas, setSearchTerm }: ServiceAreaProps) {
+export function ServiceAreaTable({
+  areas,
+  setSearchTerm,
+  loading,
+}: ServiceAreaProps) {
   const [open, setOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<any>(null);
@@ -178,67 +176,101 @@ export function ServiceAreaTable({ areas, setSearchTerm }: ServiceAreaProps) {
           </TableHeader>
 
           <TableBody>
-            {areas?.map((area: any) => (
-              <TableRow
-                key={area?.id}
-                className="border-b last:border-b-0 hover:bg-gray-50"
-              >
-                <TableCell className="px-4 py-3">{area?.areaName}</TableCell>
+            {loading ? (
+              Array.from({ length: 6 }).map((_, rowIndex) => (
+                <TableRow key={rowIndex}>
+                  {/* Area Name */}
+                  <TableCell className="px-4 py-3">
+                    <Skeleton className="h-4 w-32" />
+                  </TableCell>
 
-                <TableCell className="px-4 py-3 text-center">
-                  <Badge
-                    className={
-                      area?.status === "ACTIVE"
-                        ? "bg-green-50 text-green-700 border-green-300"
-                        : "bg-red-100 text-orange-700 border-orange-600"
-                    }
-                    variant="outline"
-                  >
-                    {area?.status}
-                  </Badge>
-                </TableCell>
+                  {/* Status */}
+                  <TableCell className="px-4 py-3 text-center">
+                    <Skeleton className="h-6 w-20 mx-auto rounded-full" />
+                  </TableCell>
 
-                <TableCell className="px-4 py-3 text-gray-700 text-center">
-                  {area?.city}
-                </TableCell>
+                  {/* City */}
+                  <TableCell className="px-4 py-3 text-center">
+                    <Skeleton className="h-4 w-40 mx-auto" />
+                  </TableCell>
 
-                <TableCell className="px-4 py-3 text-center">
-                  <div className="flex items-center justify-center gap-2">
-                    {/* Toggle Switch */}
-                    <SwitchWithState
-                      id={area?._id}
-                      onchange={handleSwitchChange}
-                      isActive={area?.status === "ACTIVE" ? true : false}
-                    />
+                  {/* Actions */}
+                  <TableCell className="px-4 py-3 text-center">
+                    <div className="flex items-center justify-center gap-2">
+                      <Skeleton className="h-6 w-10 rounded-full" />
+                      <Skeleton className="h-8 w-8 rounded-md" />
+                      <Skeleton className="h-8 w-8 rounded-md" />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : areas?.length ? (
+              areas.map((area: any) => (
+                <TableRow
+                  key={area?.id}
+                  className="border-b last:border-b-0 hover:bg-gray-50"
+                >
+                  <TableCell className="px-4 py-3">{area?.areaName}</TableCell>
 
-                    {/* Edit Button */}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        setEditOpen(!editOpen);
-                        setSelectedService(area);
-                      }}
-                      className="h-8 w-8 p-0 cursor-pointer"
-                      aria-label="Edit"
+                  <TableCell className="px-4 py-3 text-center">
+                    <Badge
+                      className={
+                        area?.status === "ACTIVE"
+                          ? "bg-green-50 text-green-700 border-green-300"
+                          : "bg-red-100 text-orange-700 border-orange-600"
+                      }
+                      variant="outline"
                     >
-                      <Pencil className="h-4 w-4 text-gray-700" />
-                    </Button>
+                      {area?.status}
+                    </Badge>
+                  </TableCell>
 
-                    {/* Delete Button */}
-                    <Button
-                      onClick={() => handleDelete(area?._id)}
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 w-8 p-0 cursor-pointer"
-                      aria-label="Delete"
-                    >
-                      <Trash2 className="h-4 w-4 text-orange-500" />
-                    </Button>
-                  </div>
+                  <TableCell className="px-4 py-3 text-gray-700 text-center">
+                    {area?.city}
+                  </TableCell>
+
+                  <TableCell className="px-4 py-3 text-center">
+                    <div className="flex items-center justify-center gap-2">
+                      <SwitchWithState
+                        id={area?._id}
+                        onchange={handleSwitchChange}
+                        isActive={area?.status === "ACTIVE"}
+                      />
+
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setEditOpen(!editOpen);
+                          setSelectedService(area);
+                        }}
+                        className="h-8 w-8 p-0 cursor-pointer"
+                      >
+                        <Pencil className="h-4 w-4 text-gray-700" />
+                      </Button>
+
+                      <Button
+                        onClick={() => handleDelete(area?._id)}
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0 cursor-pointer"
+                      >
+                        <Trash2 className="h-4 w-4 text-orange-500" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={4}
+                  className="text-center py-6 text-gray-500"
+                >
+                  No service areas found.
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </div>

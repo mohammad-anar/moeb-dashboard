@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   useGetAllMarketPlaceQuery,
   useGetMarketPlaceStatsQuery,
@@ -53,20 +54,32 @@ const MarketplacePage = () => {
       </div>
       {/* top cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statData.map((item, index) => (
-          <Card key={index} className="@container/card">
-            <CardHeader>
-              <CardDescription>{item.title}</CardDescription>
-              <CardTitle className="text-3xl font-bold tabular-nums ">
-                {item.count}
-              </CardTitle>
-            </CardHeader>
-          </Card>
-        ))}
+        {statsLoading
+          ? Array.from({ length: 3 }).map((_, index) => (
+              <Card key={index}>
+                <CardHeader>
+                  <Skeleton className="h-4 w-1/2 mb-2" />
+                  <Skeleton className="h-8 w-3/4" />
+                </CardHeader>
+              </Card>
+            ))
+          : statData.map((item, index) => (
+              <Card key={index}>
+                <CardHeader>
+                  <CardDescription>{item.title}</CardDescription>
+                  <CardTitle className="text-3xl font-bold tabular-nums">
+                    {item.count}
+                  </CardTitle>
+                </CardHeader>
+              </Card>
+            ))}
       </div>
       {/* tables */}
       <div className="mt-10">
-        <MarketplaceTable data={marketPlaceData?.data} />
+        <MarketplaceTable
+          data={marketPlaceData?.data}
+          marketPlaceLoading={marketPlaceLoading}
+        />
         <MyPagination
           currentPage={currentPage}
           onPageChange={setCurrentpage}

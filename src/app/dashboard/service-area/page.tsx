@@ -33,7 +33,7 @@ const ServiceAreaPage = () => {
 
       {/* tables */}
       <div className="mt-10">
-        <ServiceAreaTable areas={data?.data} setSearchTerm={setSearchTerm} />
+        <ServiceAreaTable areas={data?.data} setSearchTerm={setSearchTerm} loading={isLoading} />
         <MyPagination
           currentPage={currentPage}
           onPageChange={setCurrentpage}

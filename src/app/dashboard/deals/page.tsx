@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { MyPagination } from "@/components/shared/MyPagination";
 import {
@@ -11,21 +12,34 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { MyModal } from "@/components/shared/MyModal";
 import { AddDealsForm } from "@/components/forms/AddDealsForm";
+import {
+  useGetAllDealsQuery,
+  useGetDealsStatsQuery,
+} from "@/redux/service/deals/dealsApi";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const DealsPage = () => {
   const [open, setOpen] = useState(false);
+
+  // api
+  const { data: statsData, isLoading: statsLoading } =
+    useGetDealsStatsQuery(undefined);
+
+  const { data: dealsData, isLoading: dealsLoading } = useGetAllDealsQuery({});
+
+  const data = statsData?.data || {};
   const statData = [
     {
       title: "Total Offers",
-      count: 2348,
+      count: data?.totalOffers?.total || 0,
     },
     {
       title: "Active Offers",
-      count: 1523,
+      count: data?.activeOffers?.total || 0,
     },
     {
       title: "Expired Offers",
-      count: 12,
+      count: data?.expiredOffers?.total || 0,
     },
   ];
 
@@ -40,56 +54,58 @@ const DealsPage = () => {
           Add Deals
         </Button>
       </div>
-      {/* top cards */}
+
+      {/* Top cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statData.map((item, index) => (
-          <Card key={index} className="@container/card">
-            <CardHeader>
-              <CardDescription>{item.title}</CardDescription>
-              <CardTitle className="text-3xl font-bold tabular-nums ">
-                {item.count}
-              </CardTitle>
-            </CardHeader>
-          </Card>
-        ))}
+        {statsLoading
+          ? Array.from({ length: 3 }).map((_, index) => (
+              <Card key={index} className="@container/card">
+                <CardHeader>
+                  <Skeleton className="h-4 w-1/2 mb-2" />
+                  <Skeleton className="h-8 w-3/4" />
+                </CardHeader>
+              </Card>
+            ))
+          : statData.map((item, index) => (
+              <Card key={index} className="@container/card">
+                <CardHeader>
+                  <CardDescription>{item.title}</CardDescription>
+                  <CardTitle className="text-3xl font-bold tabular-nums ">
+                    {item.count}
+                  </CardTitle>
+                </CardHeader>
+              </Card>
+            ))}
       </div>
-      {/* tables */}
+
+      {/* Deals list */}
       <div className="mt-10">
         <div className="flex flex-col gap-8">
-          <PromoCard
-            badge="Service"
-            title="20% Off Premium Car Wash"
-            description="Get your vehicle professionally detailed at Elite Auto Spa"
-            promoCode="ELITE20"
-            expiresDate="Feb 15"
-          />
-
-          <PromoCard
-            badge="Maintenance"
-            title="Free Oil Change Check"
-            description="Complimentary oil inspection with any service booking"
-            promoCode="OILFREE"
-            expiresDate="Feb 20"
-          />
-
-          <PromoCard
-            badge="Repair"
-            title="15% Off Brake Service"
-            description="Save on brake pad replacement and inspection"
-            promoCode="BRAKE15"
-            expiresDate="Mar 01"
-          />
-
-          <PromoCard
-            badge="Detailing"
-            title="30% Off Interior Cleaning"
-            description="Deep interior cleaning for a fresher ride"
-            promoCode="CLEAN30"
-            expiresDate="Mar 10"
-          />
-        </div>{" "}
+          {dealsLoading
+            ? Array.from({ length: 3 }).map((_, index) => (
+                <Card key={index} className="p-5">
+                  <Skeleton className="h-6 w-1/2 mb-2" />
+                  <Skeleton className="h-4 w-3/4 mb-1" />
+                  <Skeleton className="h-4 w-1/2" />
+                </Card>
+              ))
+            : dealsData?.data?.map((deals: any, index: number) => (
+                <PromoCard
+                  key={index}
+                  badge="Service"
+                  title={deals?.title || "20% Off Premium Car Wash"}
+                  description={
+                    deals?.description ||
+                    "Get your vehicle professionally detailed at Elite Auto Spa"
+                  }
+                  promoCode={deals?.promoCode || "ELITE20"}
+                  expiresDate={deals?.expireDate || "Feb 15"}
+                />
+              ))}
+        </div>
         <MyPagination />
       </div>
+
       <MyModal open={open} onOpenChange={setOpen}>
         <AddDealsForm />
       </MyModal>

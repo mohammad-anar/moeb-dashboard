@@ -78,7 +78,9 @@ export function PromoCard({
       {/* Expiration Date */}
       <div className="flex items-center gap-2 text-neutral-500">
         <Calendar className="h-4 w-4" />
-        <span className="text-sm">Expires {expiresDate}</span>
+        <span className="text-sm">
+          Expires {new Date(expiresDate).toLocaleString()}
+        </span>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import React from "react";
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 interface ModalProps {
   open: boolean;
@@ -24,6 +25,7 @@ export function MyModal({
 }: ModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogTitle className="text-lg font-medium sr-only">Modal</DialogTitle>
       <DialogContent
         showCloseButton={showCloseButton}
         className={cn(contentClassName, " overflow-hidden")}

@@ -1,13 +1,17 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { X } from "lucide-react";
+import { toast } from "sonner";
+import { useCreateDealsMutation } from "@/redux/service/deals/dealsApi";
 
 type DealsFormData = {
   title: string;
-  shortDescription: string;
-  tag: string;
+  description: string;
+  tags: string[];
   promoCode: string;
-  expiresDate: string;
+  expireDate: string;
 };
 
 export function AddDealsForm() {
@@ -15,18 +19,49 @@ export function AddDealsForm() {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
+    reset,
+    setValue,
   } = useForm<DealsFormData>({
     defaultValues: {
       title: "",
-      shortDescription: "",
-      tag: "",
+      description: "",
+      tags: [],
       promoCode: "",
-      expiresDate: "",
+      expireDate: "",
     },
   });
 
+  const tags = watch("tags");
+  const [inputValue, setInputValue] = useState("");
+
+  const [createDeals, { isLoading }] = useCreateDealsMutation();
+
+  const handleAddTag = (tag: string) => {
+    if (tag.trim() && !tags.includes(tag.trim())) {
+      setValue("tags", [...tags, tag.trim()]);
+      setInputValue("");
+    }
+  };
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setValue(
+      "tags",
+      tags.filter((tag) => tag !== tagToRemove),
+    );
+  };
+
   const onSubmit = (data: DealsFormData) => {
-    console.log("Form Data:", data);
+    try {
+      toast.promise(createDeals(data).unwrap(), {
+        loading: "Creating deal...",
+        success: "Deal created successfully!",
+        error: "Failed to create deal. Please try again.",
+      });
+      reset();
+    } catch (error) {
+      toast.error("Failed to create deal. Please try again.");
+    }
   };
 
   return (
@@ -34,7 +69,7 @@ export function AddDealsForm() {
       <div>
         <h3 className="text-3xl font-medium">Create Deals</h3>
       </div>
-      <form onSubmit={handleSubmit(onSubmit)} className="w-full  mx-auto mt-8">
+      <form onSubmit={handleSubmit(onSubmit)} className="w-full mx-auto mt-8">
         {/* Title */}
         <div className="mb-6">
           <label className="block text-sm font-semibold text-black mb-3">
@@ -57,33 +92,69 @@ export function AddDealsForm() {
             Short Description <span className="text-black">*</span>
           </label>
           <textarea
-            {...register("shortDescription", {
+            {...register("description", {
               required: "Short Description is required",
             })}
             placeholder="Special rate for Elite Network members on commercial insurance"
             rows={3}
             className="w-full px-4 py-3 rounded-2xl bg-gray-100 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all resize-none"
           />
-          {errors.shortDescription && (
+          {errors.description && (
             <p className="text-red-500 text-xs mt-1">
-              {errors.shortDescription.message}
+              {errors.description.message}
             </p>
           )}
         </div>
 
-        {/* Tag */}
+        {/* Tags */}
         <div className="mb-6">
           <label className="block text-sm font-semibold text-black mb-3">
-            Tag <span className="text-black">*</span>
+            Tags <span className="text-black">*</span>
           </label>
-          <input
-            {...register("tag", { required: "Tag is required" })}
-            type="text"
-            placeholder="Service"
-            className="w-full px-4 py-3 rounded-2xl bg-gray-100 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all"
-          />
-          {errors.tag && (
-            <p className="text-red-500 text-xs mt-1">{errors.tag.message}</p>
+
+          {/* Tag Input */}
+          <div className="mb-3">
+            <input
+              type="text"
+              placeholder="Type a tag and press Enter or select from suggestions"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleAddTag(inputValue);
+                }
+              }}
+              className="w-full px-4 py-3 rounded-2xl bg-gray-100 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all"
+            />
+          </div>
+
+          {/* Selected Tags */}
+          {tags.length > 0 && (
+            <div className="mb-3">
+              <p className="text-xs text-gray-600 mb-2">Selected tags:</p>
+              <div className="flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                  <div
+                    key={tag}
+                    className="inline-flex items-center gap-2 bg-black text-white px-3 py-1 rounded-full text-sm"
+                  >
+                    <span>{tag}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveTag(tag)}
+                      className="hover:opacity-70 transition-opacity"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {errors.tags && (
+            <p className="text-red-500 text-xs mt-1">{errors.tags.message}</p>
           )}
         </div>
 
@@ -111,16 +182,15 @@ export function AddDealsForm() {
             Expires Date <span className="text-black">*</span>
           </label>
           <input
-            {...register("expiresDate", {
+            {...register("expireDate", {
               required: "Expires Date is required",
             })}
-            type="text"
-            placeholder="Feb 15"
-            className="w-full px-4 py-3 rounded-2xl bg-gray-100 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all"
+            type="date"
+            className="w-full px-4 py-3 rounded-2xl bg-gray-100 text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all"
           />
-          {errors.expiresDate && (
+          {errors.expireDate && (
             <p className="text-red-500 text-xs mt-1">
-              {errors.expiresDate.message}
+              {errors.expireDate.message}
             </p>
           )}
         </div>

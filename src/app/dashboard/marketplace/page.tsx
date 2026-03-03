@@ -7,20 +7,35 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  useGetAllMarketPlaceQuery,
+  useGetMarketPlaceStatsQuery,
+} from "@/redux/service/marketPlace/marketPlaceApi";
+import { useState } from "react";
 
 const MarketplacePage = () => {
+  const [currentPage, setCurrentpage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const { data: statsData, isLoading: statsLoading } =
+    useGetMarketPlaceStatsQuery({});
+  const data = statsData?.data;
+
+  const { data: marketPlaceData, isLoading: marketPlaceLoading } =
+    useGetAllMarketPlaceQuery({ page: currentPage, limit: limit });
+
+  console.log(marketPlaceData);
   const statData = [
     {
       title: "Total Item",
-      count: 2348,
+      count: data?.totalItems?.total || 0,
     },
     {
       title: "Active Sold",
-      count: 1523,
+      count: data?.availableItems?.total || 0,
     },
     {
       title: "Not Sold",
-      count: 12,
+      count: data?.soldItems?.total || 0,
     },
   ];
 
@@ -51,11 +66,12 @@ const MarketplacePage = () => {
       </div>
       {/* tables */}
       <div className="mt-10">
-        <MarketplaceTable
-          handleView={handleView}
-          handleSuspend={handleSuspend}
+        <MarketplaceTable data={marketPlaceData?.data} />
+        <MyPagination
+          currentPage={currentPage}
+          onPageChange={setCurrentpage}
+          totalPages={marketPlaceData?.pagination?.totalPage}
         />
-        <MyPagination />
       </div>
     </div>
   );

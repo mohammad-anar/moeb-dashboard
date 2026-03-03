@@ -34,9 +34,10 @@ const dealsApi = baseApi.injectEndpoints({
       invalidatesTags: ["Deals"],
     }),
     updateDeals: builder.mutation({
-      query: (id) => ({
+      query: ({ id, data }) => ({
         url: `/deals/${id}`,
         method: "PATCH",
+        body: data,
       }),
       invalidatesTags: ["Deals"],
     }),

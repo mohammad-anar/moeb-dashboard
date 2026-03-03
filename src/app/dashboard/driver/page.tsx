@@ -8,20 +8,25 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useGetDriverStatsQuery } from "@/redux/service/driver/driverApi";
 
 const DriverPage = () => {
+  const { data: driverStats, isLoading } = useGetDriverStatsQuery(undefined);
+
+  console.log(driverStats);
   const statData = [
     {
-      title: "Total Users",
-      count: 2348,
+      title: "Total Drivers",
+      count: driverStats?.data?.totalDrivers?.total ?? 0,
     },
     {
-      title: "Active this month",
-      count: 1523,
+      title: "Pending Drivers",
+      count: driverStats?.data?.pendingDrivers?.total ?? 0,
     },
     {
-      title: "Total Suspended",
-      count: 12,
+      title: "Suspended Drivers",
+      count: driverStats?.data?.suspendedDrivers?.total ?? 0,
     },
   ];
 
@@ -39,16 +44,27 @@ const DriverPage = () => {
       </div>
       {/* top cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statData.map((item, index) => (
-          <Card key={index} className="@container/card">
-            <CardHeader>
-              <CardDescription>{item.title}</CardDescription>
-              <CardTitle className="text-3xl font-bold tabular-nums ">
-                {item.count}
-              </CardTitle>
-            </CardHeader>
-          </Card>
-        ))}
+        {isLoading
+          ? // Render 4 skeleton cards while loading
+            Array.from({ length: 4 }).map((_, index) => (
+              <Card key={index} className="@container/card">
+                <CardHeader>
+                  <Skeleton className="h-4 w-3/4 mb-2" /> {/* Title */}
+                  <Skeleton className="h-8 w-1/2" /> {/* Count */}
+                </CardHeader>
+              </Card>
+            ))
+          : // Render actual stat cards
+            statData.map((item, index) => (
+              <Card key={index} className="@container/card">
+                <CardHeader>
+                  <CardDescription>{item.title}</CardDescription>
+                  <CardTitle className="text-3xl font-bold tabular-nums">
+                    {item.count}
+                  </CardTitle>
+                </CardHeader>
+              </Card>
+            ))}
       </div>
       {/* tables */}
       <div className="mt-10">

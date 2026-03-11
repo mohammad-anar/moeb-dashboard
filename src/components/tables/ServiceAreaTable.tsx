@@ -275,13 +275,16 @@ export function ServiceAreaTable({
         </Table>
       </div>
       <MyModal open={open} onOpenChange={(val: boolean) => setOpen(val)}>
-        <AddServiceAreaForm />
+        <AddServiceAreaForm setOpen={setOpen} />
       </MyModal>
       <MyModal
         open={editOpen}
         onOpenChange={(val: boolean) => setEditOpen(val)}
       >
-        <EditServiceAreaForm defaultValues={selectedService} />
+        <EditServiceAreaForm
+          defaultValues={selectedService}
+          setOpen={setEditOpen}
+        />
       </MyModal>
     </div>
   );

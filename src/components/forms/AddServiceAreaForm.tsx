@@ -9,7 +9,11 @@ interface AddServiceAreaFormInputs {
   city: string;
 }
 
-export function AddServiceAreaForm() {
+export function AddServiceAreaForm({
+  setOpen,
+}: {
+  setOpen: (val: boolean) => void;
+}) {
   const {
     register,
     reset,
@@ -29,6 +33,7 @@ export function AddServiceAreaForm() {
         error: "Failed to add service area. Please try again.",
       });
       reset();
+      setOpen(false);
     } catch (error) {
       toast.error("Failed to add service area. Please try again.");
     }

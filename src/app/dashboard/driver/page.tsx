@@ -43,12 +43,7 @@ const DriverPage = () => {
     },
   ];
 
-  const handleView = () => {
-    console.log("click");
-  };
-  const handleSuspend = () => {
-    console.log("click");
-  };
+  
   return (
     <div className="p-5">
       <div className="mb-10">

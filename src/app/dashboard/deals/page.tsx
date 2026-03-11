@@ -20,12 +20,17 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const DealsPage = () => {
   const [open, setOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(10);
 
   // api
   const { data: statsData, isLoading: statsLoading } =
     useGetDealsStatsQuery(undefined);
 
-  const { data: dealsData, isLoading: dealsLoading } = useGetAllDealsQuery({});
+  const { data: dealsData, isLoading: dealsLoading } = useGetAllDealsQuery({
+    page: currentPage,
+    limit,
+  });
 
   const data = statsData?.data || {};
   const statData = [
@@ -103,7 +108,11 @@ const DealsPage = () => {
                 />
               ))}
         </div>
-        <MyPagination />
+        <MyPagination
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+          totalPages={dealsData?.pagination?.totalPage}
+        />
       </div>
 
       <MyModal open={open} onOpenChange={setOpen}>

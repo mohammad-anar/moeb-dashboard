@@ -16,16 +16,35 @@ import { useState } from "react";
 import { DriverView } from "../page/driverManagement/DriverView";
 import { MyModal } from "../shared/MyModal";
 import { Skeleton } from "../ui/skeleton";
-import { useBlockUserMutation, useDeleteDriverMutation } from "@/redux/service/driver/driverApi";
+import {
+  useBlockUserMutation,
+  useDeleteDriverMutation,
+} from "@/redux/service/driver/driverApi";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface Driver {
   _id: string;
   name: string;
-  status: "Active" | "Hold";
   joinDate: string;
+  phone: string;
+  companyRole: string;
+  role: string;
   vehicleType: string;
+  status: "ACTIVE" | "PENDING" | "RESTRICTED";
   memberNumber: string;
+  createdAt: Date;
+  vehicles: { carType: string; licencePalet: string }[];
 }
 
 interface DriversTableProps {
@@ -45,6 +64,8 @@ const tableHeaders = [
 export function DriverTable({ drivers, isLoading = false }: DriversTableProps) {
   const [driverId, setDriverId] = useState<string>("");
   const [open, setOpen] = useState(false);
+
+  console.log({ drivers });
 
   // api
   const [blockUser] = useBlockUserMutation();
@@ -135,33 +156,35 @@ export function DriverTable({ drivers, isLoading = false }: DriversTableProps) {
             <TableBody>
               {drivers?.map((driver) => (
                 <TableRow
-                  key={driver._id}
+                  key={driver?._id}
                   className="border-b last:border-b-0 hover:bg-gray-50"
                 >
-                  <TableCell className="px-4 py-3">{driver.name}</TableCell>
+                  <TableCell className="px-4 py-3">{driver?.name}</TableCell>
                   <TableCell className="px-4 py-3 text-gray-700 text-center">
-                    {driver.memberNumber}
+                    {driver?.phone}
                   </TableCell>
 
                   <TableCell className="px-4 py-3 text-center">
                     <Badge
                       className={
-                        driver.status === "Active"
+                        driver?.status === "ACTIVE"
                           ? "bg-green-50 text-green-700 border-green-300"
-                          : "bg-orange-50 text-orange-700 border-orange-200"
+                          : driver?.status === "PENDING"
+                            ? "bg-orange-50 text-yellow-700 border-yellow-200"
+                            : "bg-orange-50 text-red-700 border-red-200"
                       }
                       variant="outline"
                     >
-                      {driver.status}
+                      {driver?.status}
                     </Badge>
                   </TableCell>
 
                   <TableCell className="px-4 py-3 text-gray-700 text-center">
-                    {driver.vehicleType}
+                    {driver?.vehicles![0]?.carType}
                   </TableCell>
 
                   <TableCell className="px-4 py-3 text-gray-700 text-center">
-                    {driver.joinDate}
+                    {new Date(driver?.createdAt).toDateString()}
                   </TableCell>
 
                   <TableCell className="px-4 py-3 text-center">
@@ -175,18 +198,68 @@ export function DriverTable({ drivers, isLoading = false }: DriversTableProps) {
                       >
                         <IconEye color="blue" size={25} />
                       </div>
-                      <div
-                        className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full"
-                        onClick={() => handleSuspend(driver._id)}
-                      >
-                        <IconBan color="red" size={16} />
-                      </div>
-                      <div
-                        className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full"
-                        onClick={() => handleDelete(driver._id)}
-                      >
-                        <IconTrash color="red" size={16} />
-                      </div>
+
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <div className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full">
+                            <IconBan color="red" size={16} />
+                          </div>
+                        </AlertDialogTrigger>
+
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will
+                              permanently delete the driver.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                            <AlertDialogAction className="bg-destructive text-white hover:bg-destructive/90">
+                              <div
+                                className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full"
+                                onClick={() => handleSuspend(driver._id)}
+                              >
+                                <IconBan color="red" size={16} />
+                              </div>
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <div className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full">
+                            <IconTrash color="red" size={16} />
+                          </div>
+                        </AlertDialogTrigger>
+
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will
+                              permanently delete the driver.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                            <AlertDialogAction className="bg-destructive text-white hover:bg-destructive/90">
+                              <div
+                                className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full"
+                                onClick={() => handleDelete(driver._id)}
+                              >
+                                <IconTrash color="red" size={16} />
+                              </div>
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </TableCell>
                 </TableRow>

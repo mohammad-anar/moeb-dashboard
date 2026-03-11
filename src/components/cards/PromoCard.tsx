@@ -3,8 +3,23 @@
 import { useState } from "react";
 import { Check, Copy, Tag, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { IconTrash } from "@tabler/icons-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
+import { useDeleteDealsMutation } from "@/redux/service/deals/dealsApi";
+import { toast } from "sonner";
 
 interface PromoCardProps {
+  id: string;
   badge?: string;
   title: string;
   description: string;
@@ -13,6 +28,7 @@ interface PromoCardProps {
 }
 
 export function PromoCard({
+  id,
   badge = "Service",
   title,
   description,
@@ -20,6 +36,7 @@ export function PromoCard({
   expiresDate,
 }: PromoCardProps) {
   const [copied, setCopied] = useState(false);
+  const [deleteDeals] = useDeleteDealsMutation();
 
   const handleCopy = async () => {
     try {
@@ -29,6 +46,15 @@ export function PromoCard({
     } catch (err) {
       console.error("Failed to copy:", err);
     }
+  };
+
+  const handleDelete = async () => {
+    toast.promise(await deleteDeals(id).unwrap(), {
+      loading: "Deleting...",
+      success: "Deleted successfully",
+      error: (err) =>
+        err?.message || err?.data?.message || "Error to delete deals",
+    });
   };
 
   return (
@@ -76,11 +102,43 @@ export function PromoCard({
       </div>
 
       {/* Expiration Date */}
-      <div className="flex items-center gap-2 text-neutral-500">
-        <Calendar className="h-4 w-4" />
-        <span className="text-sm">
-          Expires {new Date(expiresDate).toLocaleString()}
-        </span>
+      <div className="flex items-center justify-between gap-2 text-neutral-500">
+        <div className="flex items-center gap-2">
+          <Calendar className="h-4 w-4" />
+          <span className="text-sm">
+            Expires {new Date(expiresDate).toLocaleString()}
+          </span>
+        </div>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <div className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full">
+              <IconTrash color="red" size={16} />
+            </div>
+          </AlertDialogTrigger>
+
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the
+                driver.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+              <AlertDialogAction className="bg-destructive text-white hover:bg-destructive/90">
+                <div
+                  className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full"
+                  onClick={() => handleDelete()}
+                >
+                  <IconTrash color="red" size={16} />
+                </div>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );

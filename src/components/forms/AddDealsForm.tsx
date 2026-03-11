@@ -14,7 +14,11 @@ type DealsFormData = {
   expireDate: string;
 };
 
-export function AddDealsForm() {
+export function AddDealsForm({
+  onOpenChange,
+}: {
+  onOpenChange: (val: boolean) => void;
+}) {
   const {
     register,
     handleSubmit,
@@ -59,6 +63,7 @@ export function AddDealsForm() {
         error: "Failed to create deal. Please try again.",
       });
       reset();
+      onOpenChange(false);
     } catch (error) {
       toast.error("Failed to create deal. Please try again.");
     }

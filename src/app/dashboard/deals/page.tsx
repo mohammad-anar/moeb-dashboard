@@ -97,6 +97,7 @@ const DealsPage = () => {
             : dealsData?.data?.map((deals: any, index: number) => (
                 <PromoCard
                   key={index}
+                  id={deals?._id}
                   badge="Service"
                   title={deals?.title || "20% Off Premium Car Wash"}
                   description={
@@ -116,7 +117,7 @@ const DealsPage = () => {
       </div>
 
       <MyModal open={open} onOpenChange={setOpen}>
-        <AddDealsForm />
+        <AddDealsForm onOpenChange={setOpen} />
       </MyModal>
     </div>
   );

@@ -19,6 +19,17 @@ import image1 from "@/assets/product1.png";
 import { toast } from "sonner";
 import { useDeleteMarketPlaceMutation } from "@/redux/service/marketPlace/marketPlaceApi";
 import { Skeleton } from "../ui/skeleton";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface Stats {
   id: string;
@@ -163,13 +174,43 @@ export function MarketplaceTable({
                       >
                         <IconEye size={16} />
                       </Button>
-                      <Button
-                        size="icon"
-                        className="bg-red-700 cursor-pointer"
-                        onClick={() => handleSuspend(product?._id)}
-                      >
-                        <IconTrash size={16} />
-                      </Button>
+
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <div className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full">
+                            <Button
+                              size="icon"
+                              className="bg-red-600 cursor-pointer"
+                            >
+                              <IconTrash size={16} />
+                            </Button>
+                          </div>
+                        </AlertDialogTrigger>
+
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will
+                              permanently delete the driver.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                            <AlertDialogAction className="bg-red-600 text-white hover:bg-destructive/90">
+                              <Button
+                                size="icon"
+                                className=" bg-red-600 cursor-pointer"
+                                onClick={() => handleSuspend(product?._id)}
+                              >
+                                <IconTrash size={16} />
+                              </Button>
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </TableCell>
                 </TableRow>

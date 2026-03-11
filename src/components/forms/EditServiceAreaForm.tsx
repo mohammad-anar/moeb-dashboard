@@ -10,7 +10,7 @@ interface AddServiceAreaFormInputs {
   city: string;
 }
 
-export function EditServiceAreaForm({ defaultValues }: any) {
+export function EditServiceAreaForm({ defaultValues, setOpen }: any) {
   const {
     register,
     reset,
@@ -38,6 +38,7 @@ export function EditServiceAreaForm({ defaultValues }: any) {
       );
 
       reset();
+      setOpen(false)
     } catch (error) {
       toast.error("Failed to update service area. Please try again.");
     }

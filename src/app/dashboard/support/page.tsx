@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import ChatComponent from "@/components/page/support/ChatComponent";
 import { MyModal } from "@/components/shared/MyModal";
@@ -5,6 +6,7 @@ import { MyPagination } from "@/components/shared/MyPagination";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useGetAllSupportQuery } from "@/redux/service/support/supportApi";
 import { IconFilter, IconFilter2 } from "@tabler/icons-react";
 import {
   MoreHorizontal,
@@ -76,11 +78,16 @@ const SupportPage = () => {
   const [selectedEmails, setSelectedEmails] = useState<number[]>([]);
   const [open, setOpen] = useState(false);
 
+  const { data, isLoading } = useGetAllSupportQuery({});
+  console.log({ data });
+
+  const supportData = data?.data;
+
   const toggleSelectAll = () => {
-    if (selectedEmails.length === emails.length) {
+    if (selectedEmails?.length === supportData?.length) {
       setSelectedEmails([]);
     } else {
-      setSelectedEmails(emails.map((e) => e.id));
+      setSelectedEmails(supportData?.map((e:any) => e?._id));
     }
   };
 
@@ -147,49 +154,40 @@ const SupportPage = () => {
                 <div className="col-span-1"></div>
                 <div className="col-span-3">Sender</div>
                 <div className="col-span-6">Subject</div>
-                <div className="col-span-2 text-right">Date</div>
+                <div className="col-span-2 ">Date</div>
               </div>
 
               {/* Email Rows */}
               <div className="space-y-4">
-                {emails.map((email) => (
+                {supportData?.map((email: any) => (
                   <div
-                    key={email.id}
-                    onClick={() => setOpen(!open)}
+                    key={email?._id}
                     className="hover:bg-gray-50 cursor-pointer duration-300 grid grid-cols-12 gap-4 items-center pb-4 border-b border-border/50 last:border-b-0"
                   >
                     <div className="flex items-center gap-5">
                       <div className="col-span-1 flex items-center">
                         <input
                           type="checkbox"
-                          checked={selectedEmails.includes(email.id)}
-                          onChange={() => toggleSelectEmail(email.id)}
+                          checked={selectedEmails.includes(email?._id)}
+                          onChange={() => toggleSelectEmail(email?._id)}
                           className="w-4 h-4 cursor-pointer"
                         />
                       </div>
-                      <div className="col-span-1">
-                        <button className="text-muted-foreground hover:text-foreground mt-1">
-                          <svg
-                            className="w-5 h-5"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                          </svg>
-                        </button>
-                      </div>
                     </div>
-                    <div className="col-span-10 grid grid-cols-10">
+                    <div
+                      onClick={() => setOpen(!open)}
+                      className="col-span-10 grid grid-cols-10"
+                    >
                       <div className="col-span-2 text-sm font-medium text-foreground">
-                        {email.sender}
+                        {email?.user?.name}
                       </div>
                       <div className="col-span-6">
                         <p className="text-sm text-muted-foreground">
-                          {email.subject}
+                          {email?.subject}
                         </p>
                       </div>
                       <div className="col-span-2 text-right text-sm text-muted-foreground">
-                        {email.date}
+                        {new Date(email?.createdAt).toLocaleString()}
                       </div>
                     </div>
                   </div>

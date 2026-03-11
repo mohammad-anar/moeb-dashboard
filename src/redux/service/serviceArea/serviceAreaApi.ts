@@ -1,6 +1,6 @@
 import { baseApi } from "@/redux/api/baseApi";
 
-const marketPlaceApi = baseApi.injectEndpoints({
+const serviceAreaApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     createServiceArea: builder.mutation({
       query: (data) => ({
@@ -57,4 +57,4 @@ export const {
   useGetAllCitiesQuery,
   useUpdateServiceAreaMutation,
   useDeleteServiceAreaMutation,
-} = marketPlaceApi;
+} = serviceAreaApi;

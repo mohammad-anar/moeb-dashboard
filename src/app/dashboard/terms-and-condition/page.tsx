@@ -1,20 +1,39 @@
 "use client";
+import { Suspense } from "react";
 
-import TermsAndConditionForm from "@/components/forms/AddTermsAndcondition";
+import TermsForm from "./component/TermsFormk";
+import { getLegalDocumentsData } from "./component/data";
+import TermsSkeleton from "./component/TermsSkeleton";
+import {
+  useGetAllTermsQuery,
+  useGetTermsBySlugQuery,
+} from "@/redux/service/terms&conditions/termsApi";
 
-const DriverPage = () => {
+// async function TermsLoader() {
+//   const data = await getLegalDocumentsData();
+
+//   return <TermsForm data={data} />;
+// }
+
+export default function TermsAndConditionsPage() {
+  const { data: termsData } = useGetAllTermsQuery({});
+  const { data: slugData } = useGetTermsBySlugQuery(termsData?.data[0]?.slug, {
+    skip: !termsData?.data[0]?.slug,
+  });
   return (
-    <div className="p-5">
-      {/* <div className="mb-10">
-        <h4 className="text-[36px]">Support </h4>
-        <p>Manage and monitor all users on your platform</p>
-      </div> */}
-
-      <div className="mt-10">
-        <TermsAndConditionForm />
+    <section className="flex flex-col gap-6 p-6">
+      <div className="space-y-1">
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Legal Documents
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Manage privacy policies, terms, and other legal documents.
+        </p>
       </div>
-    </div>
-  );
-};
 
-export default DriverPage;
+      <Suspense fallback={<TermsSkeleton />}>
+        <TermsForm data={slugData?.data} />
+      </Suspense>
+    </section>
+  );
+}

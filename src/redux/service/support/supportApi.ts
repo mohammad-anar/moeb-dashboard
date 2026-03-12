@@ -27,9 +27,9 @@ const supportApi = baseApi.injectEndpoints({
       providesTags: ["Support"],
     }),
 
-    deleteTerms: builder.mutation({
-      query: (slug) => ({
-        url: `/supports/${slug}`,
+    deleteSupport: builder.mutation({
+      query: (id) => ({
+        url: `/supports/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Support"],
@@ -41,5 +41,5 @@ export const {
   useGetAllSupportQuery,
   useGetSupportByIdQuery,
   useReplySupportQuery,
-  useDeleteTermsMutation,
+  useDeleteSupportMutation,
 } = supportApi;

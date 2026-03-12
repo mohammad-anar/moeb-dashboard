@@ -17,6 +17,7 @@ import {
   setRefreshToken,
   setUser,
 } from "@/redux/features/auth";
+import { decodeToken } from "@/lib/utils";
 
 interface LoginForm {
   email: string;
@@ -53,7 +54,10 @@ export default function LoginPage() {
           );
         },
         success: (data) => {
-          const { user, accessToken, refreshToken } = data.data;
+          const {  accessToken, refreshToken } = data.data;
+
+          // Decode token to get user info if needed, or use apiUser
+          const decodedUser = decodeToken(accessToken);
 
           // Save tokens in cookies if needed
           Cookies.set("accessToken", accessToken, {
@@ -69,10 +73,10 @@ export default function LoginPage() {
             secure: false,
           });
 
-          // Update Redux slice
+          // Update Redux slice - Prioritize apiUser but allow decoded info for ID
           dispatch(
             setUser({
-              user,
+              user: decodedUser,
             }),
           );
           dispatch(setAccessToken(accessToken));

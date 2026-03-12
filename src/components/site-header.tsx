@@ -1,3 +1,4 @@
+"use client"
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
 import {
@@ -9,14 +10,19 @@ import {
 import { IconBell } from "@tabler/icons-react";
 import { User } from "lucide-react";
 import Link from "next/link";
+import { useGetAllNotificationQuery } from "@/redux/service/notification/notificationApi";
+import { useAppSelector } from "@/redux/hooks/hooks";
+import { RootState } from "@/redux/store";
 
 export function SiteHeader() {
+  const user = useAppSelector((state:RootState) => state.auth.user)
+  const { data: notifications } = useGetAllNotificationQuery({});
+  console.log(notifications);   
   const data = {
     user: {
-      name: "shadcn",
-      email: "m@example.com",
-      avatar:
-        "https://i.ibb.co.com/VWkMFBWM/pngtree-user-icon-png-image-1796659.jpg",
+      name: user?.name,
+      email: user?.email,
+      avatar: user?.avatar || "https://i.ibb.co.com/VWkMFBWM/pngtree-user-icon-png-image-1796659.jpg",
     },
   };
   return (
@@ -37,9 +43,9 @@ export function SiteHeader() {
                 }
               >
                 <div className="relative ">
-                  <div className="w-5 h-5 rounded-full bg-red-500 absolute -right-2 -top-1 flex items-center justify-center">
-                    <span className="text-[10px] text-white">5</span>
-                  </div>
+                  {notifications?.data?.length > 0 && <div className="w-5 h-5 rounded-full bg-red-500 absolute -right-2 -top-1 flex items-center justify-center">
+                    <span className="text-[10px] text-white">{notifications?.data?.length}</span>
+                  </div>}
                   <IconBell size={28} className="h-full" />
                 </div>
               </div>

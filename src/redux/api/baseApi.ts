@@ -102,6 +102,7 @@ export const baseApi = createApi({
     "ServiceArea",
     "Terms",
     "Support",
+    "Notification",
   ],
   endpoints: () => ({}),
 });

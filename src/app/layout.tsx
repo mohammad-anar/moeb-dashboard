@@ -30,9 +30,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         cz-shortcut-listen="true"
       >
-       
-          <ReduxProvider>{children}</ReduxProvider>
-        <Toaster richColors position="bottom-right" />
+        <ReduxProvider>{children}</ReduxProvider>
+        <Toaster position="bottom-right" />
       </body>
     </html>
   );

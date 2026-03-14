@@ -82,8 +82,12 @@ export default function LoginPage() {
           dispatch(setAccessToken(accessToken));
           dispatch(setRefreshToken(refreshToken));
 
-          // Redirect to dashboard
-          router.push("/dashboard");
+          // Redirect based on role
+          if (decodedUser?.role === "DRIVER") {
+            router.push("/driver/subscription");
+          } else {
+            router.push("/dashboard");
+          }
           return data?.message;
         },
       });

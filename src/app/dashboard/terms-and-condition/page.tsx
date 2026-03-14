@@ -16,10 +16,7 @@ import {
 // }
 
 export default function TermsAndConditionsPage() {
-  const { data: termsData } = useGetAllTermsQuery({});
-  const { data: slugData } = useGetTermsBySlugQuery(termsData?.data[0]?.slug, {
-    skip: !termsData?.data[0]?.slug,
-  });
+  
   return (
     <section className="flex flex-col gap-6 p-6">
       <div className="space-y-1">
@@ -32,7 +29,7 @@ export default function TermsAndConditionsPage() {
       </div>
 
       <Suspense fallback={<TermsSkeleton />}>
-        <TermsForm data={slugData?.data} />
+        <TermsForm  />
       </Suspense>
     </section>
   );

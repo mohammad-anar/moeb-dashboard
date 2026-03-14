@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const legalDocumentTypes = ["terms-and-conditions"] as const;
+const legalDocumentTypes = ["terms-and-conditions", "privacy-policy"] as const;
 
 export const termsSchema = z.object({
   type: z.enum(legalDocumentTypes, {

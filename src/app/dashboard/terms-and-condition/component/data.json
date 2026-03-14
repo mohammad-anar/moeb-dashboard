@@ -1,34 +1,14 @@
 {
   "options": [
     {
-      "id": "privacy-policy",
-      "label": "Privacy Policy",
-      "description": "How we collect and use data"
-    },
-    {
       "id": "terms-and-conditions",
       "label": "Terms and Conditions",
       "description": "Rules for using the platform"
     },
     {
-      "id": "cookie-policy",
-      "label": "Cookie Policy",
-      "description": "Cookies and tracking preferences"
-    },
-    {
-      "id": "disclaimer",
-      "label": "Disclaimer",
-      "description": "Limitations of liability"
-    },
-    {
-      "id": "return-refund-policy",
-      "label": "Return/Refund Policy",
-      "description": "Refund rules and timelines"
-    },
-    {
-      "id": "eula",
-      "label": "End-User License Agreement (EULA)",
-      "description": "License terms for end users"
+      "id": "privacy-policy",
+      "label": "Privacy Policy",
+      "description": "How we collect and use data"
     }
   ],
   "documents": [

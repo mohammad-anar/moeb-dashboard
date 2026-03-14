@@ -23,55 +23,66 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import {
+  useGetAllTermsQuery,
+    useGetTermsBySlugQuery,
     useUpdateTermsMutation
 } from "@/redux/service/terms&conditions/termsApi";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TermsFormData, termsSchema } from "../Terms.Schema";
 import Editor from "./Editor";
+import { DropdownMenuRadioItem } from "@radix-ui/react-dropdown-menu";
+import data from "./data.json"
+import { ChevronDown } from "lucide-react";
 
-type TermsFormProps = {
-  data: { content: string; slug: string };
-};
 
-const DEFAULT_TYPE = "terms-and-conditions";
+const DEFAULT_TYPE = "privacy-policy";
 
-export default function TermsForm({ data }: TermsFormProps) {
-  const [updateTerms] = useUpdateTermsMutation();
-  const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
-  //   const documentsByType = useMemo(() => {
-  //     return data.documents.reduce<Record<string, string>>(
-  //       (accumulator, document) => {
-  //         accumulator[document.type] = document.content;
-  //         return accumulator;
-  //       },
-  //       {},
-  //     );
-  //   }, [data.documents]);
 
+export default function TermsForm() {
+  const { data: termsData } = useGetAllTermsQuery({});
+  
   const form = useForm<TermsFormData>({
     resolver: zodResolver(termsSchema),
     defaultValues: {
       type: DEFAULT_TYPE,
-      content: data?.content ?? "dfdfd",
+      content: "Loading...",
     },
   });
 
+  const selectedSlug = form.watch("type");
+
+  const { data: slugData } = useGetTermsBySlugQuery(selectedSlug, {
+    skip: !selectedSlug,
+  });
+
+  const FormData = slugData?.data;
+  const [updateTerms] = useUpdateTermsMutation();
+  const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
+
   useEffect(() => {
-    form.setValue("content", data?.content);
-  }, [data]);
+    if (termsData?.data && !form.getValues("type")) {
+      form.setValue("type", termsData.data[0]?.slug);
+    }
+  }, [termsData, form]);
+
+  useEffect(() => {
+    if (FormData?.content !== undefined) {
+      form.setValue("content", FormData.content);
+    }
+  }, [FormData, form]);
 
   const onSubmit = async (values: TermsFormData) => {
     try {
       toast.promise(
-        updateTerms({ slug: data?.slug, data: { content: values?.content } }),
+        updateTerms({ slug: selectedSlug, data: { content: values?.content } }),
         {
-          loading: "Updating the terms page",
-          success: "Terms page updated",
-          error: "Error to update terms page",
+          loading: "Updating the legal document",
+          success: "Document updated successfully",
+          error: "Failed to update the document",
         },
       );
     } catch {
-      toast.error("Unable to save the document. Try again.");
+      toast.error("Unable to save. Try again.");
     }
   };
 
@@ -95,16 +106,15 @@ export default function TermsForm({ data }: TermsFormProps) {
                       onOpenChange={setTypeDropdownOpen}
                     >
                       <DropdownMenuTrigger asChild>
-                        {/* <Button
+                        <Button
                           variant="outline"
                           className="w-auto gap-2 border-primary bg-white"
                         >
-                          {data.options.find((opt) => opt.id === field.value)
-                            ?.label || "Select document type"}
+                          {termsData?.data?.find((item: any) => item.slug === field.value)?.title || "Select document type"}
                           <ChevronDown className="h-4 w-4" />
-                        </Button> */}
+                        </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="center" className="w-full">
+                      <DropdownMenuContent align="center" className="w-[200px]">
                         <DropdownMenuRadioGroup
                           value={field.value}
                           onValueChange={(value) => {
@@ -112,21 +122,19 @@ export default function TermsForm({ data }: TermsFormProps) {
                             setTypeDropdownOpen(false);
                           }}
                         >
-                          {/* {data.options.map((option) => (
+                          {termsData?.data?.map((item: any) => (
                             <DropdownMenuRadioItem
-                              key={option.id}
-                              value={option.id}
+                              key={item._id}
+                              value={item.slug}
+                              className="relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                             >
-                              <div className="flex flex-col items-start">
+                              <div className="flex flex-col items-start text-black">
                                 <p className="text-sm font-medium">
-                                  {option.label}
-                                </p>
-                                <p className="text-xs text-muted-foreground">
-                                  {option.description}
+                                  {item.title}
                                 </p>
                               </div>
                             </DropdownMenuRadioItem>
-                          ))} */}
+                          ))}
                         </DropdownMenuRadioGroup>
                       </DropdownMenuContent>
                     </DropdownMenu>

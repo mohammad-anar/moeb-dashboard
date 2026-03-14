@@ -12,8 +12,15 @@ import {
 } from "@/components/ui/table";
 import { IconBan, IconEye, IconTrash } from "@tabler/icons-react";
 import { Download, Search, Sliders } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DriverView } from "../page/driverManagement/DriverView";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 import { MyModal } from "../shared/MyModal";
 import { Skeleton } from "../ui/skeleton";
 import {
@@ -50,6 +57,10 @@ interface Driver {
 interface DriversTableProps {
   drivers?: Driver[];
   isLoading?: boolean;
+  searchTerm: string;
+  onSearchChange: (value: string) => void;
+  statusFilter: string | undefined;
+  onStatusChange: (value: string | undefined) => void;
 }
 
 const tableHeaders = [
@@ -61,11 +72,24 @@ const tableHeaders = [
   "Actions",
 ];
 
-export function DriverTable({ drivers, isLoading = false }: DriversTableProps) {
+export function DriverTable({
+  drivers,
+  isLoading = false,
+  searchTerm,
+  onSearchChange,
+  statusFilter,
+  onStatusChange,
+}: DriversTableProps) {
   const [driverId, setDriverId] = useState<string>("");
   const [open, setOpen] = useState(false);
+  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
 
-  console.log({ drivers });
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onSearchChange(localSearchTerm);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [localSearchTerm, onSearchChange]);
 
   // api
   const [blockUser] = useBlockUserMutation();
@@ -96,6 +120,38 @@ export function DriverTable({ drivers, isLoading = false }: DriversTableProps) {
       toast.error("Failed to block driver. Please try again.");
     }
   };
+
+  const handleExport = () => {
+    if (!drivers || drivers.length === 0) {
+      toast.error("No data to export");
+      return;
+    }
+
+    const headers = ["Name", "Member Number", "Status", "Vehicle Type", "Join Date"];
+    const csvRows = [
+      headers.join(","),
+      ...drivers.map((driver) =>
+        [
+          `"${driver.name}"`,
+          `"${driver.phone}"`,
+          `"${driver.status}"`,
+          `"${driver.vehicles?.[0]?.carType || "N/A"}"`,
+          `"${new Date(driver.createdAt).toLocaleDateString()}"`,
+        ].join(","),
+      ),
+    ];
+
+    const csvContent = csvRows.join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `drivers_export_${new Date().toISOString().split("T")[0]}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
   return (
     <div className="space-y-6 rounded-xl">
       <div className="flex items-center gap-3 w-full">
@@ -103,22 +159,42 @@ export function DriverTable({ drivers, isLoading = false }: DriversTableProps) {
           <Search className="w-5 h-5 text-gray-400" />
           <input
             type="text"
-            placeholder="Search by name or email..."
+            placeholder="Search by name..."
+            value={localSearchTerm}
+            onChange={(e) => setLocalSearchTerm(e.target.value)}
             className="flex-1 bg-transparent text-sm outline-none text-gray-700 placeholder:text-gray-400"
           />
         </div>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 text-gray-700 border-gray-200 bg-transparent h-[40px]"
+            >
+              <Sliders className="w-4 h-4" />
+              {statusFilter ? statusFilter : "Status"}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuRadioGroup
+              value={statusFilter}
+              onValueChange={(val) => onStatusChange(val === "ALL" ? undefined : val)}
+            >
+              <DropdownMenuRadioItem value="ALL">All Status</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="ACTIVE">Active</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="PENDING">Pending</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="RESTRICTED">Restricted</DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
         <Button
           variant="outline"
           size="sm"
-          className="gap-2 text-gray-700 border-gray-200 bg-transparent"
-        >
-          <Sliders className="w-4 h-4" />
-          Filters
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          className="gap-2 text-gray-700 border-gray-200 bg-transparent"
+          onClick={handleExport}
+          className="gap-2 text-gray-700 border-gray-200 bg-transparent h-[40px]"
         >
           <Download className="w-4 h-4" />
           Export
@@ -218,13 +294,11 @@ export function DriverTable({ drivers, isLoading = false }: DriversTableProps) {
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
 
-                            <AlertDialogAction className="bg-destructive text-white hover:bg-destructive/90">
-                              <div
-                                className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full"
-                                onClick={() => handleSuspend(driver._id)}
-                              >
-                                <IconBan color="red" size={16} />
-                              </div>
+                            <AlertDialogAction
+                              onClick={() => handleSuspend(driver._id)}
+                              className="bg-destructive text-white hover:bg-destructive/90"
+                            >
+                              Confirm
                             </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>

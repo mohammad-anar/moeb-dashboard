@@ -18,12 +18,16 @@ import { useState } from "react";
 const DriverPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
 
   const { data: driverStats, isLoading } = useGetDriverStatsQuery(undefined);
 
   const { data: drivers, isLoading: isDriversLoading } = useGetAllDriversQuery({
     page: currentPage,
     limit,
+    searchTerm: searchTerm || undefined,
+    status: statusFilter || undefined,
   });
 
   console.log(drivers);
@@ -79,6 +83,16 @@ const DriverPage = () => {
         <DriverTable
           drivers={drivers?.data}
           isLoading={isDriversLoading}
+          searchTerm={searchTerm}
+          onSearchChange={(val) => {
+            setSearchTerm(val);
+            setCurrentPage(1);
+          }}
+          statusFilter={statusFilter}
+          onStatusChange={(val) => {
+            setStatusFilter(val);
+            setCurrentPage(1);
+          }}
         />
         <MyPagination
           currentPage={currentPage}

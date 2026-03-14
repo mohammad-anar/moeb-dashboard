@@ -24,6 +24,18 @@ import {
 } from "@/redux/service/serviceArea/serviceAreaApi";
 import { toast } from "sonner";
 import { Skeleton } from "../ui/skeleton";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
+import { IconBan } from "@tabler/icons-react";
 
 interface ServiceAreaProps {
   areas: any;
@@ -249,14 +261,36 @@ export function ServiceAreaTable({
                         <Pencil className="h-4 w-4 text-gray-700" />
                       </Button>
 
-                      <Button
-                        onClick={() => handleDelete(area?._id)}
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 w-8 p-0 cursor-pointer"
-                      >
-                        <Trash2 className="h-4 w-4 text-orange-500" />
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <div className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full">
+                            <Trash2 className="h-4 w-4 text-orange-500" />
+                          </div>
+                        </AlertDialogTrigger>
+
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will
+                              permanently delete the driver.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                            <AlertDialogAction className="bg-red-600 text-white hover:bg-destructive/90">
+                              <div
+                                onClick={() => handleDelete(area?._id)}
+                                className=" p-0 cursor-pointer"
+                              >
+                                <Trash2 className="h-4 w-4 text-white" />
+                              </div>
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </TableCell>
                 </TableRow>

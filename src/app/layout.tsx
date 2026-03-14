@@ -31,7 +31,7 @@ export default function RootLayout({
         cz-shortcut-listen="true"
       >
         <ReduxProvider>{children}</ReduxProvider>
-        <Toaster position="bottom-right" />
+        <Toaster closeButton expand theme="system" position="bottom-right" />
       </body>
     </html>
   );

@@ -39,6 +39,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useSendEmailMutation } from "@/redux/service/subscription/subscriptionApi";
 
 interface Driver {
   _id: string;
@@ -52,6 +53,7 @@ interface Driver {
   memberNumber: string;
   createdAt: Date;
   vehicles: { carType: string; licencePalet: string }[];
+  subscription: subscription;
 }
 
 interface DriversTableProps {
@@ -63,12 +65,21 @@ interface DriversTableProps {
   onStatusChange: (value: string | undefined) => void;
 }
 
+interface subscription {
+  status: string;
+  plan: string;
+  currentPeriodEnd: string;
+}
+
 const tableHeaders = [
   "Name",
   "Member Number",
   "Status",
   "Vehicle Type",
   "Join Date",
+  "Subscription Type",
+  "Subscription Status",
+  "Subscription End Date",
   "Actions",
 ];
 
@@ -94,7 +105,7 @@ export function DriverTable({
   // api
   const [blockUser] = useBlockUserMutation();
   const [deleteDriver] = useDeleteDriverMutation();
-
+  const [sendMail, {isLoading: isSendMailLoading}] = useSendEmailMutation();
   const handleDelete = (id: string) => {
     try {
       toast.promise(deleteDriver(id).unwrap(), {
@@ -118,6 +129,18 @@ export function DriverTable({
       setOpen(false);
     } catch (error) {
       toast.error("Failed to block driver. Please try again.");
+    }
+  };
+
+  const handleSendMail = (id: string) => {
+    try {
+      toast.promise(sendMail(id).unwrap(), {
+        loading: "Sending email...",
+        success: "Email sent successfully.",
+        error: "Failed to send email. Please try again.",
+      });
+    } catch (error) {
+      toast.error("Failed to send email. Please try again.");
     }
   };
 
@@ -261,6 +284,17 @@ export function DriverTable({
 
                   <TableCell className="px-4 py-3 text-gray-700 text-center">
                     {new Date(driver?.createdAt).toDateString()}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-700 text-center">
+                    {driver?.subscription?.plan || "N/A"}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-700 text-center">
+                    {driver?.subscription?.status === "active" 
+                    ? "Active" 
+                    : <Button onClick={() => handleSendMail(driver?._id)} disabled={isSendMailLoading}>{isSendMailLoading ? "Sending..." : "Send Email"}</Button> }
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-700 text-center">
+                    {driver?.subscription?.currentPeriodEnd ? new Date(driver?.subscription?.currentPeriodEnd).toDateString() : "N/A"}
                   </TableCell>
 
                   <TableCell className="px-4 py-3 text-center">

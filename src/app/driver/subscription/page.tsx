@@ -20,9 +20,9 @@ export default function SubscriptionPage() {
 
   const handlePurchase = async () => {
     try {
-      const result = await getPaymentUrl({ plan: "ANNUAL" }).unwrap();
-      if (result.success && result.data?.paymentUrl) {
-        window.open(result.data.paymentUrl, "_blank");
+      const result = await getPaymentUrl({ plan: "YEARLY" }).unwrap();
+      if (result.success && result.data?.url) {
+        window.open(result.data.url, "_blank");
       } else {
         toast.error(result.message || "Failed to get payment URL");
       }

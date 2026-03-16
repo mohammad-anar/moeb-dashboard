@@ -150,16 +150,31 @@ export function DriverTable({
       return;
     }
 
-    const headers = ["Name", "Member Number", "Status", "Vehicle Type", "Join Date"];
+    const headers = [
+      "Name",
+      "Member Number",
+      "Phone",
+      "Status",
+      "Vehicle Type",
+      "Join Date",
+      "Subscription Plan",
+      "Subscription Status",
+      "Subscription End Date",
+    ];
+
     const csvRows = [
       headers.join(","),
       ...drivers.map((driver) =>
         [
-          `"${driver.name}"`,
-          `"${driver.phone}"`,
-          `"${driver.status}"`,
+          `"${driver.name || ""}"`,
+          `"${driver.memberNumber || ""}"`,
+          `"${driver.phone || ""}"`,
+          `"${driver.status || ""}"`,
           `"${driver.vehicles?.[0]?.carType || "N/A"}"`,
-          `"${new Date(driver.createdAt).toLocaleDateString()}"`,
+          `"${driver.createdAt ? new Date(driver.createdAt).toLocaleDateString() : ""}"`,
+          `"${driver.subscription?.plan || "N/A"}"`,
+          `"${driver.subscription?.status || "N/A"}"`,
+          `"${driver.subscription?.currentPeriodEnd ? new Date(driver.subscription.currentPeriodEnd).toLocaleDateString() : "N/A"}"`,
         ].join(","),
       ),
     ];
@@ -291,7 +306,7 @@ export function DriverTable({
                   <TableCell className="px-4 py-3 text-gray-700 text-center">
                     {driver?.subscription?.status === "active" 
                     ? "Active" 
-                    : <Button onClick={() => handleSendMail(driver?._id)} disabled={isSendMailLoading}>{isSendMailLoading ? "Sending..." : "Send Email"}</Button> }
+                    : <Button onClick={() => handleSendMail(driver?._id)} disabled={isSendMailLoading}>Send Email</Button> }
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-700 text-center">
                     {driver?.subscription?.currentPeriodEnd ? new Date(driver?.subscription?.currentPeriodEnd).toDateString() : "N/A"}

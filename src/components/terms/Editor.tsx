@@ -9,7 +9,7 @@ import "react-quill-new/dist/quill.snow.css"; // Import styles
 // Dynamically import ReactQuill with SSR disabled
 const ReactQuill = dynamic(() => import("react-quill-new"), {
   ssr: false,
-  loading: () => <p>Loading Editor...</p>,
+  loading: () => <p>Loading Editor...</p>
 });
 
 interface EditorProps {
@@ -26,10 +26,10 @@ const Editor = ({ value, onChange }: EditorProps) => {
         ["bold", "italic", "underline", "strike"],
         [{ list: "ordered" }, { list: "bullet" }],
         ["link"],
-        ["clean"],
-      ],
+        ["clean"]
+      ]
     }),
-    [],
+    []
   );
 
   return (

@@ -36,7 +36,7 @@ const termsApi = baseApi.injectEndpoints({
     }),
     deleteTerms: builder.mutation({
       query: (slug) => ({
-        url: `/service-areas/${slug}`,
+        url: `/legals/${slug}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Terms"],

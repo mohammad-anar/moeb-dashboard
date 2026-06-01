@@ -6,7 +6,7 @@ export const getSocket = () => {
   const token = Cookies.get("accessToken");
 
   if (!socket) {
-    socket = io("http://10.10.7.33:5002", {
+    socket = io("https://api.ekkali.app", {
       transports: ["websocket", "polling"],
       withCredentials: true,
       auth: {

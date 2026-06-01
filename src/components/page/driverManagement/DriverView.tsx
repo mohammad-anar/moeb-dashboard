@@ -95,109 +95,131 @@ export function DriverView({ driverId, setOpen }: any) {
         </div>
       </div>
 
-      {/* Vehicle Details */}
-      <div className="px-6 pt-6 pb-4">
-        <h4 className="text-sm font-bold text-foreground mb-4">
-          Vehicle Details
-        </h4>
+      {/* Vehicles Loop */}
+      <div className="space-y-4">
         {driver?.vehicles?.map((vehicle: any, index: number) => (
-          <div key={index} className="space-y-3">
-            <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex-shrink-0">
-                1
+          <div key={index} className="border-t first:border-none last:pb-6">
+            {/* Vehicle Header */}
+            <div className="px-6 py-4 bg-gray-50 flex items-center justify-between">
+              <h4 className="text-sm font-bold text-foreground">
+                Vehicle #{index + 1} - {vehicle?.carType ?? "N/A"}
+              </h4>
+
+            </div>
+
+            {/* Vehicle Details */}
+            <div className="px-6 py-4 grid grid-cols-2 gap-4">
+              <div className="flex items-start gap-3">
+                <div className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex-shrink-0">
+                  1
+                </div>
+                <div>
+                  <p className="text-[10px] text-muted-foreground uppercase font-medium">Make & Model</p>
+                  <p className="text-sm font-semibold text-amber-600">
+                    {vehicle ? `${vehicle.make} ${vehicle.model}` : "N/A"}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-foreground">Make & Model</p>
-                <p className="text-sm font-semibold text-amber-600">
-                  {vehicle ? `${vehicle.make} ${vehicle.model}` : "N/A"}
-                </p>
+              <div className="flex items-start gap-3">
+                <div className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex-shrink-0">
+                  2
+                </div>
+                <div>
+                  <p className="text-[10px] text-muted-foreground uppercase font-medium">Color</p>
+                  <p className="text-sm font-semibold text-amber-600">
+                    {vehicle?.colorInside ?? "N/A"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex-shrink-0">
+                  3
+                </div>
+                <div>
+                  <p className="text-[10px] text-muted-foreground uppercase font-medium">Year</p>
+                  <p className="text-sm font-semibold text-amber-600">
+                    {vehicle?.year ?? "N/A"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex-shrink-0">
+                  4
+                </div>
+                <div>
+                  <p className="text-[10px] text-muted-foreground uppercase font-medium">License Plate</p>
+                  <p className="text-sm font-semibold text-amber-600">
+                    {vehicle?.licensePlate ?? "N/A"}
+                  </p>
+                </div>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex-shrink-0">
-                2
-              </div>
-              <div>
-                <p className="text-sm text-foreground">Color</p>
-                <p className="text-sm font-semibold text-amber-600">
-                  {vehicle?.colorInside ?? "N/A"}
-                </p>
+
+            {/* Documents */}
+            <div className="px-6 py-4 border-t border-b border-dashed">
+              <p className="text-xs font-bold text-foreground mb-3">Verification Documents</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-tight">Vehicle Registration</p>
+                  <div className="bg-white border border-gray-100 rounded-xl overflow-hidden aspect-[4/3] group relative shadow-sm">
+                    <img
+                      src={vehicle?.vehicleRegistration?.image}
+                      alt="Vehicle Registration"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    {vehicle?.vehicleRegistration?.expiryDate && (
+                      <div className="absolute inset-x-0 bottom-0 p-2 bg-black/60 text-white text-[9px] backdrop-blur-sm">
+                        Expires: {new Date(vehicle.vehicleRegistration.expiryDate).toLocaleDateString()}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-tight">Commercial Insurance</p>
+                  <div className="bg-white border border-gray-100 rounded-xl overflow-hidden aspect-[4/3] group relative shadow-sm">
+                    <img
+                      src={vehicle?.commercialInsurance?.image}
+                      alt="Commercial Insurance"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    {vehicle?.commercialInsurance?.expiryDate && (
+                      <div className="absolute inset-x-0 bottom-0 p-2 bg-black/60 text-white text-[9px] backdrop-blur-sm">
+                        Expires: {new Date(vehicle.commercialInsurance.expiryDate).toLocaleDateString()}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex-shrink-0">
-                3
-              </div>
-              <div>
-                <p className="text-sm text-foreground">Year</p>
-                <p className="text-sm font-semibold text-amber-600">
-                  {vehicle?.year ?? "N/A"}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex-shrink-0">
-                4
-              </div>
-              <div>
-                <p className="text-sm text-foreground">License Plate</p>
-                <p className="text-sm font-semibold text-amber-600">
-                  {vehicle?.licensePlate ?? "N/A"}
-                </p>
+
+            {/* Photos */}
+            <div className="px-6 py-4">
+              <p className="text-xs font-bold text-foreground mb-3">Vehicle Photos</p>
+              <div className="grid grid-cols-3 gap-2.5">
+                {[
+                  { label: "Front View", src: vehicle?.photos?.frontView },
+                  { label: "Interior View", src: vehicle?.photos?.interiorView },
+                  { label: "Rear View", src: vehicle?.photos?.rearView },
+                ].map((photo, pIdx) => (
+                  <div key={pIdx} className="space-y-1">
+                    <p className="text-[9px] text-muted-foreground text-center uppercase font-medium">{photo.label}</p>
+                    <div className="bg-white border border-gray-100 rounded-lg overflow-hidden aspect-square shadow-sm group">
+                      {photo.src ? (
+                        <img
+                          src={photo.src}
+                          alt={photo.label}
+                          className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-500"
+                        />
+                      ) : (
+                        <div className="flex items-center justify-center h-full text-[9px] text-gray-300">No Image</div>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Documents */}
-      <div className="px-6 pt-6 pb-4 border-t">
-        <h4 className="text-sm font-bold text-foreground mb-4">Documents</h4>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-blue-100 rounded-lg aspect-[3/4] flex items-center justify-center">
-            <img
-              src={driver?.vehicleRegistration?.image}
-              alt="Front View"
-              className="w-full h-full object-cover rounded-lg"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Vehicle Photos */}
-      <div className="px-6 pt-6 pb-6 border-t">
-        <h4 className="text-sm font-bold text-foreground mb-4">
-          Vehicle Photos
-        </h4>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-gray-800 rounded-lg aspect-video">
-            {driver?.vehiclePhotos?.frontView && (
-              <img
-                src={driver?.vehiclePhotos?.frontView}
-                alt="Front View"
-                className="w-full h-full object-cover rounded-lg"
-              />
-            )}
-          </div>
-          <div className="bg-gray-800 rounded-lg aspect-video">
-            {driver?.vehiclePhotos?.interiorView && (
-              <img
-                src={driver?.vehiclePhotos?.interiorView}
-                alt="Front View"
-                className="w-full h-full object-cover rounded-lg"
-              />
-            )}
-          </div>
-          <div className="bg-gray-800 rounded-lg aspect-video">
-            {driver?.vehiclePhotos?.rearView && (
-              <img
-                src={driver?.vehiclePhotos?.rearView}
-                alt="Front View"
-                className="w-full h-full object-cover rounded-lg"
-              />
-            )}
-          </div>
-        </div>
       </div>
 
       {/* Action Buttons */}

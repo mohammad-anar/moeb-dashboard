@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+import Cookies from "js-cookie";
+
 interface AuthSate {
   user: any;
   accessToken: string | null;
@@ -9,8 +11,8 @@ interface AuthSate {
 
 const initialState: AuthSate = {
   user: null,
-  accessToken: null,
-  refreshToken: null,
+  accessToken: Cookies.get("accessToken") || null,
+  refreshToken: Cookies.get("refreshToken") || null,
 };
 
 const authSlice = createSlice({
@@ -34,7 +36,10 @@ const authSlice = createSlice({
     logout(state) {
       state.user = null;
       state.accessToken = null;
-      window.location.href = "/login";
+      state.refreshToken = null;
+      Cookies.remove("accessToken");
+      Cookies.remove("refreshToken");
+      window.location.href = "/auth/login";
     },
   },
 });

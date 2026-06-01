@@ -44,6 +44,7 @@ import { useSendEmailMutation } from "@/redux/service/subscription/subscriptionA
 interface Driver {
   _id: string;
   name: string;
+  uid?: string;
   joinDate: string;
   phone: string;
   companyRole: string;
@@ -54,6 +55,12 @@ interface Driver {
   createdAt: Date;
   vehicles: { carType: string; licencePalet: string }[];
   subscription: subscription;
+  stats: {
+    totalJobsCreated: number;
+    totalJobsCompleted: number;
+    payout: number;
+    earnings: number;
+  };
 }
 
 interface DriversTableProps {
@@ -73,7 +80,12 @@ interface subscription {
 
 const tableHeaders = [
   "Name",
-  "Member Number",
+  "UID",
+  "Phone Number",
+  "Jobs Created",
+  "Jobs Completed",
+  "Payout",
+  "Earnings",
   "Status",
   "Vehicle Type",
   "Join Date",
@@ -105,7 +117,7 @@ export function DriverTable({
   // api
   const [blockUser] = useBlockUserMutation();
   const [deleteDriver] = useDeleteDriverMutation();
-  const [sendMail, {isLoading: isSendMailLoading}] = useSendEmailMutation();
+  const [sendMail, { isLoading: isSendMailLoading }] = useSendEmailMutation();
   const handleDelete = (id: string) => {
     try {
       toast.promise(deleteDriver(id).unwrap(), {
@@ -152,8 +164,12 @@ export function DriverTable({
 
     const headers = [
       "Name",
-      "Member Number",
+      "UID",
       "Phone",
+      "Jobs Created",
+      "Jobs Completed",
+      "Payout",
+      "Earnings",
       "Status",
       "Vehicle Type",
       "Join Date",
@@ -167,8 +183,12 @@ export function DriverTable({
       ...drivers.map((driver) =>
         [
           `"${driver.name || ""}"`,
-          `"${driver.memberNumber || ""}"`,
+          `"${driver.uid || ""}"`,
           `"${driver.phone || ""}"`,
+          `"${driver.stats?.totalJobsCreated || 0}"`,
+          `"${driver.stats?.totalJobsCompleted || 0}"`,
+          `"${driver.stats?.payout || 0}"`,
+          `"${driver.stats?.earnings || 0}"`,
           `"${driver.status || ""}"`,
           `"${driver.vehicles?.[0]?.carType || "N/A"}"`,
           `"${driver.createdAt ? new Date(driver.createdAt).toLocaleDateString() : ""}"`,
@@ -197,7 +217,7 @@ export function DriverTable({
           <Search className="w-5 h-5 text-gray-400" />
           <input
             type="text"
-            placeholder="Search by name..."
+            placeholder="Search by name or phone..."
             value={localSearchTerm}
             onChange={(e) => setLocalSearchTerm(e.target.value)}
             className="flex-1 bg-transparent text-sm outline-none text-gray-700 placeholder:text-gray-400"
@@ -258,7 +278,7 @@ export function DriverTable({
             <TableBody>
               {Array.from({ length: 5 }).map((_, index) => (
                 <TableRow key={index} className="border-b last:border-b-0">
-                  {Array.from({ length: 6 }).map((_, colIndex) => (
+                  {Array.from({ length: 14 }).map((_, colIndex) => (
                     <TableCell key={colIndex} className="px-4 py-3">
                       <Skeleton className="h-4 w-full" />
                     </TableCell>
@@ -274,8 +294,24 @@ export function DriverTable({
                   className="border-b last:border-b-0 hover:bg-gray-50"
                 >
                   <TableCell className="px-4 py-3">{driver?.name}</TableCell>
+                  <TableCell className="px-4 py-3 text-center text-gray-500 font-mono text-[11px]">
+                    {driver?.uid || "N/A"}
+                  </TableCell>
                   <TableCell className="px-4 py-3 text-gray-700 text-center">
                     {driver?.phone}
+                  </TableCell>
+
+                  <TableCell className="px-4 py-3 text-center text-gray-700 font-medium">
+                    {driver?.stats?.totalJobsCreated || 0}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-center text-gray-700 font-medium">
+                    {driver?.stats?.totalJobsCompleted || 0}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-center text-gray-700 font-bold">
+                    ${driver?.stats?.payout || 0}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-center text-gray-700 font-bold text-green-600">
+                    ${driver?.stats?.earnings || 0}
                   </TableCell>
 
                   <TableCell className="px-4 py-3 text-center">
@@ -304,9 +340,9 @@ export function DriverTable({
                     {driver?.subscription?.plan || "N/A"}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-700 text-center">
-                    {driver?.subscription?.status === "active" 
-                    ? "Active" 
-                    : <Button onClick={() => handleSendMail(driver?._id)} disabled={isSendMailLoading}>Send Email</Button> }
+                    {driver?.subscription?.status === "active"
+                      ? "Active"
+                      : <Button onClick={() => handleSendMail(driver?._id)} disabled={isSendMailLoading}>Send Email</Button>}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-700 text-center">
                     {driver?.subscription?.currentPeriodEnd ? new Date(driver?.subscription?.currentPeriodEnd).toDateString() : "N/A"}

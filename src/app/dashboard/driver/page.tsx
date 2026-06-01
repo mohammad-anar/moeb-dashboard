@@ -47,7 +47,7 @@ const DriverPage = () => {
     },
   ];
 
-  
+
   return (
     <div className="p-5">
       <div className="mb-10">
@@ -58,25 +58,25 @@ const DriverPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {isLoading
           ? // Render 4 skeleton cards while loading
-            Array.from({ length: 4 }).map((_, index) => (
-              <Card key={index} className="@container/card">
-                <CardHeader>
-                  <Skeleton className="h-4 w-3/4 mb-2" /> {/* Title */}
-                  <Skeleton className="h-8 w-1/2" /> {/* Count */}
-                </CardHeader>
-              </Card>
-            ))
+          Array.from({ length: 4 }).map((_, index) => (
+            <Card key={index} className="@container/card">
+              <CardHeader>
+                <Skeleton className="h-4 w-3/4 mb-2" /> {/* Title */}
+                <Skeleton className="h-8 w-1/2" /> {/* Count */}
+              </CardHeader>
+            </Card>
+          ))
           : // Render actual stat cards
-            statData.map((item, index) => (
-              <Card key={index} className="@container/card">
-                <CardHeader>
-                  <CardDescription>{item.title}</CardDescription>
-                  <CardTitle className="text-3xl font-bold tabular-nums">
-                    {item.count}
-                  </CardTitle>
-                </CardHeader>
-              </Card>
-            ))}
+          statData.map((item, index) => (
+            <Card key={index} className="@container/card">
+              <CardHeader>
+                <CardDescription>{item.title}</CardDescription>
+                <CardTitle className="text-3xl font-bold tabular-nums">
+                  {item.count}
+                </CardTitle>
+              </CardHeader>
+            </Card>
+          ))}
       </div>
       {/* tables */}
       <div className="mt-10">

@@ -46,6 +46,8 @@ const baseQueryWithReauth: BaseQueryFn<
 
     if (!refreshToken) {
       api.dispatch(logout());
+      Cookies.remove("accessToken");
+      Cookies.remove("refreshToken");
       window.location.href = "/auth/login";
       return result;
     }
@@ -69,6 +71,7 @@ const baseQueryWithReauth: BaseQueryFn<
     if (refreshResult.error?.status === 401) {
       api.dispatch(logout());
       Cookies.remove("accessToken");
+      Cookies.remove("refreshToken");
       window.location.href = "/auth/login";
       return result;
     }
@@ -83,6 +86,7 @@ const baseQueryWithReauth: BaseQueryFn<
     } else {
       api.dispatch(logout());
       Cookies.remove("accessToken");
+      Cookies.remove("refreshToken");
       window.location.href = "/auth/login";
     }
   }
@@ -104,6 +108,7 @@ export const baseApi = createApi({
     "Support",
     "Notification",
     "Subscription",
+    "Job",
   ],
   endpoints: () => ({}),
 });

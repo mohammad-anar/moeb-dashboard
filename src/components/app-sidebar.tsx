@@ -36,6 +36,11 @@ const data = {
       icon: IconUsersGroup,
     },
     {
+      name: "Job Management",
+      url: "/dashboard/job",
+      icon: IconCalendarSearch,
+    },
+    {
       name: "Deals Management",
       url: "/dashboard/deals",
       icon: IconCalendarUser,

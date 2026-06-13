@@ -220,7 +220,7 @@ export function JobTable({
         </DropdownMenu>
       </div>
 
-      <div className="border border-gray-300 rounded-lg overflow-hidden bg-white shadow-sm">
+      <div className="border border-gray-300 rounded-lg overflow-x-auto bg-white shadow-sm">
         <Table>
           <TableHeader>
             <TableRow className="bg-gray-200">

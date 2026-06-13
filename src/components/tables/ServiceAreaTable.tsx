@@ -172,7 +172,7 @@ export function ServiceAreaTable({
         </Button>
       </div>
 
-      <div className="border border-gray-300 rounded-lg overflow-hidden bg-white">
+      <div className="border border-gray-300 rounded-lg overflow-x-auto bg-white">
         <Table>
           <TableHeader>
             <TableRow className="bg-gray-200">

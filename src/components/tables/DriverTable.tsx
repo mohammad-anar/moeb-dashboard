@@ -26,6 +26,7 @@ import { Skeleton } from "../ui/skeleton";
 import {
   useBlockUserMutation,
   useDeleteDriverMutation,
+  useUnBlockUserMutation,
 } from "@/redux/service/driver/driverApi";
 import { toast } from "sonner";
 import {
@@ -116,6 +117,7 @@ export function DriverTable({
 
   // api
   const [blockUser] = useBlockUserMutation();
+  const [unBlockUser] = useUnBlockUserMutation();
   const [deleteDriver] = useDeleteDriverMutation();
   const [sendMail, { isLoading: isSendMailLoading }] = useSendEmailMutation();
   const handleDelete = (id: string) => {
@@ -141,6 +143,20 @@ export function DriverTable({
       setOpen(false);
     } catch (error) {
       toast.error("Failed to block driver. Please try again.");
+    }
+  };
+
+  const handleUnsuspend = (id: string) => {
+    try {
+      toast.promise(unBlockUser(id).unwrap(), {
+        loading: "Unblocking driver...",
+        success: "Driver unblocked successfully.",
+        error: "Failed to unblock driver. Please try again.",
+      });
+
+      setOpen(false);
+    } catch (error) {
+      toast.error("Failed to unblock driver. Please try again.");
     }
   };
 
@@ -212,7 +228,7 @@ export function DriverTable({
   };
   return (
     <div className="space-y-6 rounded-xl">
-      <div className="flex items-center gap-3 w-full">
+      <div className="flex flex-wrap items-center gap-3 w-full">
         <div className="flex-1 flex items-center gap-3 px-4 py-2 rounded-lg border border-gray-200 bg-white">
           <Search className="w-5 h-5 text-gray-400" />
           <input
@@ -259,7 +275,7 @@ export function DriverTable({
         </Button>
       </div>
 
-      <div className="border border-gray-300 rounded-lg overflow-hidden bg-white">
+      <div className="border border-gray-300 rounded-lg overflow-x-auto bg-white">
         <Table>
           <TableHeader>
             <TableRow className="bg-gray-200">
@@ -363,7 +379,10 @@ export function DriverTable({
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <div className="bg-transparent cursor-pointer hover:bg-gray-300 p-2 duration-300 rounded-full">
-                            <IconBan color="red" size={16} />
+                            <IconBan
+                              color={driver?.status === "RESTRICTED" ? "green" : "red"}
+                              size={16}
+                            />
                           </div>
                         </AlertDialogTrigger>
 
@@ -371,8 +390,9 @@ export function DriverTable({
                           <AlertDialogHeader>
                             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                             <AlertDialogDescription>
-                              This action cannot be undone. This will
-                              permanently delete the driver.
+                              {driver?.status === "RESTRICTED"
+                                ? "This will unsuspend the driver."
+                                : "This will suspende the driver."}
                             </AlertDialogDescription>
                           </AlertDialogHeader>
 
@@ -380,8 +400,16 @@ export function DriverTable({
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
 
                             <AlertDialogAction
-                              onClick={() => handleSuspend(driver._id)}
-                              className="bg-destructive text-white hover:bg-destructive/90"
+                              onClick={() =>
+                                driver?.status === "RESTRICTED"
+                                  ? handleUnsuspend(driver._id)
+                                  : handleSuspend(driver._id)
+                              }
+                              className={
+                                driver?.status === "RESTRICTED"
+                                  ? "bg-green-600 text-white hover:bg-green-700"
+                                  : "bg-destructive text-white hover:bg-destructive/90"
+                              }
                             >
                               Confirm
                             </AlertDialogAction>

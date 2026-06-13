@@ -107,6 +107,7 @@ export function DriverTable({
   const [driverId, setDriverId] = useState<string>("");
   const [open, setOpen] = useState(false);
   const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
+  const [sendingMailId, setSendingMailId] = useState<string | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -119,7 +120,7 @@ export function DriverTable({
   const [blockUser] = useBlockUserMutation();
   const [unBlockUser] = useUnBlockUserMutation();
   const [deleteDriver] = useDeleteDriverMutation();
-  const [sendMail, { isLoading: isSendMailLoading }] = useSendEmailMutation();
+  const [sendMail] = useSendEmailMutation();
   const handleDelete = (id: string) => {
     try {
       toast.promise(deleteDriver(id).unwrap(), {
@@ -160,15 +161,19 @@ export function DriverTable({
     }
   };
 
-  const handleSendMail = (id: string) => {
+  const handleSendMail = async (id: string) => {
     try {
-      toast.promise(sendMail(id).unwrap(), {
+      setSendingMailId(id);
+      await toast.promise(sendMail(id).unwrap(), {
         loading: "Sending email...",
         success: "Email sent successfully.",
-        error: "Failed to send email. Please try again.",
+        error: (err: any) => err?.data?.message || "Failed to send email. Please try again.",
       });
     } catch (error) {
-      toast.error("Failed to send email. Please try again.");
+      // The error toast is already handled by toast.promise above
+      console.error(error);
+    } finally {
+      setSendingMailId(null);
     }
   };
 
@@ -358,7 +363,14 @@ export function DriverTable({
                   <TableCell className="px-4 py-3 text-gray-700 text-center">
                     {driver?.subscription?.status === "active"
                       ? "Active"
-                      : <Button onClick={() => handleSendMail(driver?._id)} disabled={isSendMailLoading}>Send Email</Button>}
+                      : (
+                        <Button
+                          onClick={() => handleSendMail(driver?._id)}
+                          disabled={sendingMailId === driver?._id}
+                        >
+                          {sendingMailId === driver?._id ? "Sending..." : "Send Email"}
+                        </Button>
+                      )}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-700 text-center">
                     {driver?.subscription?.currentPeriodEnd ? new Date(driver?.subscription?.currentPeriodEnd).toDateString() : "N/A"}

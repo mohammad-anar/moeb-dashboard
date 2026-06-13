@@ -15,9 +15,9 @@ import { useAppSelector } from "@/redux/hooks/hooks";
 import { RootState } from "@/redux/store";
 
 export function SiteHeader() {
-  const user = useAppSelector((state:RootState) => state.auth.user)
-  const { data: notifications } = useGetAllNotificationQuery({});
-  console.log(notifications);   
+  const user = useAppSelector((state: RootState) => state.auth.user)
+  // const { data: notifications } = useGetAllNotificationQuery({});
+  // console.log(notifications);   
   const data = {
     user: {
       name: user?.name,
@@ -36,7 +36,7 @@ export function SiteHeader() {
         <h1 className="text-base font-medium">Admin Panel</h1>
         <div className="ml-auto flex items-center gap-2">
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            {/* <DropdownMenuTrigger asChild>
               <div
                 className={
                   " hover:bg-gray-100 duration-300 cursor-pointer rounded-md p-3"
@@ -49,7 +49,7 @@ export function SiteHeader() {
                   <IconBell size={28} className="h-full" />
                 </div>
               </div>
-            </DropdownMenuTrigger>
+            </DropdownMenuTrigger> */}
             <DropdownMenuContent align="end" className="w-[300px]">
               <div className="px-2">
                 <h4 className="font-bold text-lg">Notification</h4>
